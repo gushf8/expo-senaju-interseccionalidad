@@ -31,12 +31,24 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
-      // Service worker auto-registration for PWA
+      // Service worker auto-update & self-healing registration
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
-            .then((reg) => console.log('ServiceWorker registrado con éxito:', reg.scope))
-            .catch((err) => console.log('Error al registrar ServiceWorker:', err));
+            .then((reg) => {
+              // Check for updates immediately
+              reg.update();
+              reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    console.log('[SW] Nueva versión detectada. Actualizando...');
+                    window.location.reload();
+                  }
+                });
+              });
+            })
+            .catch((err) => console.log('Error ServiceWorker:', err));
         });
       }
     </script>

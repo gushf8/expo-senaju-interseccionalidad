@@ -1,6 +1,6 @@
-// Service Worker para PWA 100% Offline - SENAJU ML Lab 2026
-const CACHE_NAME = 'senaju-pwa-v1';
-const DYNAMIC_CACHE = 'senaju-dynamic-v1';
+// Service Worker v3 para PWA 100% Offline - SENAJU ML Lab 2026
+const CACHE_NAME = 'senaju-pwa-v3';
+const DYNAMIC_CACHE = 'senaju-dynamic-v3';
 
 const STATIC_ASSETS = [
   '/',
@@ -13,13 +13,14 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[ServiceWorker] Pre-caching static assets');
+      console.log('[SW v3] Pre-caching static assets');
       return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.warn('[ServiceWorker] Non-critical precache error:', err);
+        console.warn('[SW v3] Non-critical precache error:', err);
       });
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
@@ -29,7 +30,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME && key !== DYNAMIC_CACHE) {
-            console.log('[ServiceWorker] Removing old cache', key);
+            console.log('[SW v3] Purgando cache antigua:', key);
             return caches.delete(key);
           }
         })
@@ -39,46 +40,47 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
 
-  // If requesting self or external assets
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Return cached version, but also update dynamic cache in background if online
-        fetch(event.request)
-          .then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              caches.open(DYNAMIC_CACHE).then((cache) => {
-                cache.put(event.request, networkResponse.clone());
-              });
-            }
-          })
-          .catch(() => {});
-        return cachedResponse;
-      }
-
-      // Not in cache: fetch from network and store
-      return fetch(event.request)
+  // 1. Navigation / HTML requests: NETWORK FIRST (with offline cache fallback)
+  // This guarantees we always load the fresh HTML containing current asset hashes!
+  if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+    event.respondWith(
+      fetch(event.request)
         .then((networkResponse) => {
-          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type === 'opaque') {
-            return networkResponse;
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
           }
-          const responseToCache = networkResponse.clone();
-          caches.open(DYNAMIC_CACHE).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
           return networkResponse;
         })
         .catch(() => {
-          // If network fails and request is for page navigation, fallback to root
-          if (event.request.mode === 'navigate') {
-            return caches.match('/');
+          // Fallback to cache ONLY when device is offline
+          return caches.match(event.request).then((cached) => {
+            return cached || caches.match('/') || caches.match('/index.html');
+          });
+        })
+    );
+    return;
+  }
+
+  // 2. Static Assets (JS, CSS, fonts, images): CACHE FIRST with network fallback
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      return fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(DYNAMIC_CACHE).then((cache) => cache.put(event.request, copy));
           }
-        });
+          return networkResponse;
+        })
+        .catch(() => null);
     })
   );
 });
@@ -100,12 +102,13 @@ self.addEventListener('message', (event) => {
           console.warn('Failed to precache resource:', u, e);
         }
       }
-      event.ports[0].postMessage({
-        type: 'CACHE_ALL_COMPLETED',
-        total: urlsToCache.length,
-        cached: cachedCount
-      });
+      if (event.ports && event.ports[0]) {
+        event.ports[0].postMessage({
+          type: 'CACHE_ALL_COMPLETED',
+          total: urlsToCache.length,
+          cached: cachedCount
+        });
+      }
     });
   }
 });
-
