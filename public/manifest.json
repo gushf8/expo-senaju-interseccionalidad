@@ -1,0 +1,31 @@
+{
+  "name": "Interseccionalidad & Modelos Predictivos - SENAJU 2026",
+  "short_name": "SENAJU ML Lab",
+  "description": "Plataforma de exposición ejecutiva e interactiva de Machine Learning e Inferencia Causal (K-Prototypes, Logit, XGBoost, TreeSHAP, DML) sobre inserción laboral juvenil en Perú (ENAHO 2025).",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#4f46e5",
+  "orientation": "any",
+  "categories": ["education", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
