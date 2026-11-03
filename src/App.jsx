@@ -7,6 +7,7 @@ import InteractiveLab from './components/InteractiveLab';
 import TheoryExploration from './components/TheoryExploration';
 import PaperViewer from './components/PaperViewer';
 import { SLIDES_DATA } from './data/paperData';
+import { Smartphone, RotateCw } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('slides');
@@ -15,6 +16,25 @@ export default function App() {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [offlineCached, setOfflineCached] = useState(false);
+  const [isPortrait, setIsPortrait] = useState(false);
+
+  // Monitor orientation for mobile landscape optimization
+  useEffect(() => {
+    const checkOrientation = () => {
+      if (window.innerWidth < 768 && window.innerHeight > window.innerWidth) {
+        setIsPortrait(true);
+      } else {
+        setIsPortrait(false);
+      }
+    };
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      window.removeEventListener('orientationchange', checkOrientation);
+    };
+  }, []);
 
   // Monitor Online/Offline status
   useEffect(() => {
@@ -35,7 +55,6 @@ export default function App() {
     const handleBeforeInstall = (e) => {
       e.preventDefault();
       setInstallPrompt(e);
-      console.log('beforeinstallprompt capturado');
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
@@ -46,9 +65,8 @@ export default function App() {
     if (!installPrompt) return;
     installPrompt.prompt();
     const { outcome } = await installPrompt.userChoice;
-    console.log('Resultado de instalación:', outcome);
     if (outcome === 'accepted') {
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      confetti({ particleCount: 90, spread: 70, origin: { y: 0.5 } });
     }
     setInstallPrompt(null);
   };
@@ -63,7 +81,7 @@ export default function App() {
           confetti({
             particleCount: 80,
             spread: 60,
-            origin: { y: 0.2 }
+            origin: { y: 0.3 }
           });
         }
       };
@@ -84,7 +102,6 @@ export default function App() {
         [channel.port2]
       );
     } else {
-      // Direct cache fallback
       if ('caches' in window) {
         try {
           const cache = await caches.open('senaju-manual-cache');
@@ -100,7 +117,7 @@ export default function App() {
           setOfflineCached(true);
           confetti({ particleCount: 60, spread: 50 });
         } catch (err) {
-          console.warn('Manual cache failed:', err);
+          console.warn('Manual cache fallback failed:', err);
         }
       }
     }
@@ -126,7 +143,6 @@ export default function App() {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Don't intercept if typing in an input
       if (['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
 
       if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
@@ -157,9 +173,17 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeTab]);
 
+  const handleNextSlide = () => {
+    setCurrentSlide((prev) => Math.min(SLIDES_DATA.length - 1, prev + 1));
+  };
+
+  const handlePrevSlide = () => {
+    setCurrentSlide((prev) => Math.max(0, prev - 1));
+  };
+
   return (
-    <div className="min-h-screen bg-[#070b14] text-slate-100 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
-      {/* Executive Header */}
+    <div className="min-h-screen bg-[#fcfbfe] text-slate-900 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
+      {/* Executive White & Purple Header */}
       <Header
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -170,11 +194,23 @@ export default function App() {
         offlineCached={offlineCached}
       />
 
+      {/* Portrait helper alert for Mobile in Slide Mode */}
+      {isPortrait && activeTab === 'slides' && (
+        <div className="bg-purple-100 border-b border-purple-200 py-1 px-3 text-center flex items-center justify-center gap-1.5 text-[11px] font-bold text-purple-900">
+          <RotateCw className="w-3.5 h-3.5 animate-spin" />
+          <span>Gira tu móvil a horizontal para ver las diapositivas 16:9 encajadas</span>
+        </div>
+      )}
+
       {/* Main Content Area */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col items-center justify-start">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-6 py-3 sm:py-6 flex flex-col items-center justify-start">
         {activeTab === 'slides' && (
-          <div className="w-full flex flex-col items-center gap-6">
-            <SlideViewer currentSlideIndex={currentSlide} />
+          <div className="w-full flex flex-col items-center gap-3 sm:gap-5">
+            <SlideViewer
+              currentSlideIndex={currentSlide}
+              onNextSlide={handleNextSlide}
+              onPrevSlide={handlePrevSlide}
+            />
             <SlideNavigation
               currentSlide={currentSlide}
               onSlideChange={setCurrentSlide}
@@ -191,14 +227,14 @@ export default function App() {
         {activeTab === 'paper' && <PaperViewer />}
       </main>
 
-      {/* Bottom Footer Info */}
-      <footer className="w-full border-t border-slate-900 bg-slate-950/80 py-4 px-6 text-center text-xs text-slate-400">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      {/* Footer */}
+      <footer className="w-full border-t border-purple-100 bg-white/90 py-3 px-4 text-center text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5">
           <span>
-            © 2026 <strong>Gustavo Fernando Huamán Fernández</strong> • Investigación SENAJU / INEI ENAHO 2025
+            © 2026 <strong>Gustavo Fernando Huamán Fernández</strong> • Investigación Ganadora SENAJU
           </span>
-          <div className="flex items-center gap-4 text-[11px] font-mono">
-            <span>Atajos de teclado: &larr; &rarr; (Slides) • Espacio • F (Pantalla Completa) • 1-4 (Pestañas)</span>
+          <div className="text-[11px] font-mono text-purple-800 font-semibold">
+            Tema Blanco & Púrpura Real • PWA 100% Offline
           </div>
         </div>
       </footer>

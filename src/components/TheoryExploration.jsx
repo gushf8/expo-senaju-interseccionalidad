@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { THEORETICAL_MODELS } from '../data/paperData';
 import MathView from './MathView';
-import { BookOpen, Code2, Cpu, CheckCircle2, ArrowRight, ShieldCheck, Layers, GitBranch } from 'lucide-react';
+import { BookOpen, Code2, Cpu, CheckCircle2, ShieldCheck, Layers } from 'lucide-react';
 
 export default function TheoryExploration() {
   const [activeModelId, setActiveModelId] = useState('k-prototypes');
@@ -9,75 +9,74 @@ export default function TheoryExploration() {
   const currentModel = THEORETICAL_MODELS.find((m) => m.id === activeModelId) || THEORETICAL_MODELS[0];
 
   return (
-    <div className="w-full flex flex-col gap-6">
-      {/* Top Selector Tabs */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-slate-800 pb-3">
+    <div className="w-full flex flex-col gap-4 max-w-6xl mx-auto">
+      {/* Selector Tabs: White & Purple */}
+      <div className="flex flex-wrap items-center gap-1.5 border-b border-purple-200 pb-2.5">
         {THEORETICAL_MODELS.map((m) => {
           const active = m.id === activeModelId;
           return (
             <button
               key={m.id}
               onClick={() => setActiveModelId(m.id)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all border ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all border ${
                 active
-                  ? 'bg-indigo-600 border-indigo-400 text-white shadow-lg shadow-indigo-600/30'
-                  : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  ? 'bg-purple-700 border-purple-800 text-white shadow-sm'
+                  : 'bg-white border-purple-200 text-slate-700 hover:border-purple-300'
               }`}
             >
-              <Cpu className="w-4 h-4" />
+              <Cpu className="w-3.5 h-3.5" />
               <span>{m.name}</span>
             </button>
           );
         })}
       </div>
 
-      {/* Main Model Content Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Mathematical Formulation & Components (7 cols) */}
-        <div className="lg:col-span-7 flex flex-col gap-5">
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Left Column: Equations & Axioms (7 cols) */}
+        <div className="lg:col-span-7 flex flex-col gap-3">
           {/* Header Card */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+          <div className="bg-white border border-purple-200 rounded-2xl p-4 shadow-sm">
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-purple-100 text-purple-900 border border-purple-200">
                 {currentModel.badge}
               </span>
-              <span className="text-xs text-slate-400 font-mono">Fundamento Axiomático</span>
+              <span className="text-[10px] text-slate-500 font-mono font-bold">Fundamento Teórico</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white">
+            <h2 className="text-lg sm:text-xl font-black text-slate-900">
               {currentModel.name}
             </h2>
-            <p className="text-xs sm:text-sm text-indigo-300 font-medium mt-0.5">
+            <p className="text-xs text-purple-800 font-bold mt-0.5">
               {currentModel.subtitle}
             </p>
-            <p className="text-xs sm:text-sm text-slate-300 mt-3 leading-relaxed">
+            <p className="text-xs text-slate-700 mt-2 leading-relaxed">
               {currentModel.whyUsed}
             </p>
           </div>
 
           {/* Master Equation Card */}
-          <div className="bg-slate-950 border border-indigo-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
-            <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2">
-              <Layers className="w-4 h-4 text-indigo-400" />
-              Función Objetivo / Ecuación Maestra
+          <div className="bg-white border-2 border-purple-300 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+            <div className="text-[10px] font-black uppercase tracking-wider text-purple-900 mb-1 flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-purple-700" />
+              Función Objetivo / Formulación Matemática
             </div>
 
-            <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 my-2 text-center overflow-x-auto">
-              <MathView math={currentModel.formulaTeX} display={true} className="text-indigo-200 text-lg sm:text-xl" />
+            <div className="bg-purple-50/70 border border-purple-200 rounded-xl p-3 my-2 text-center overflow-x-auto">
+              <MathView math={currentModel.formulaTeX} display={true} className="text-purple-950 font-bold text-base sm:text-lg" />
             </div>
 
             {/* Components Breakdown */}
-            <div className="mt-4 flex flex-col gap-2">
-              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                Desglose de Términos Matemáticos:
+            <div className="mt-2 flex flex-col gap-1.5">
+              <div className="text-[10px] font-black text-slate-700 uppercase">
+                Términos y Parámetros:
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                 {currentModel.components.map((comp, idx) => (
-                  <div key={idx} className="bg-slate-900/60 border border-slate-800/80 rounded-xl p-3 flex flex-col gap-1">
-                    <div className="text-xs text-indigo-300 font-mono font-bold">
+                  <div key={idx} className="bg-purple-50/50 border border-purple-100 rounded-lg p-2 flex flex-col gap-0.5">
+                    <div className="text-xs text-purple-900 font-mono font-black">
                       <MathView math={comp.symbol} />
                     </div>
-                    <div className="text-[11px] text-slate-300 leading-tight">
+                    <div className="text-[10px] text-slate-600 font-medium leading-tight">
                       {comp.desc}
                     </div>
                   </div>
@@ -86,100 +85,80 @@ export default function TheoryExploration() {
             </div>
           </div>
 
-          {/* Validation & Diagnostics */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+          {/* Validation Protocol */}
+          <div className="bg-purple-50/80 border border-purple-200 rounded-2xl p-3 flex items-start gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-purple-700 flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                Protocolo de Validación en la Investigación
+              <h4 className="text-[10px] font-black text-purple-950 uppercase">
+                Validación en el Manuscrito ENAHO 2025
               </h4>
-              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-700 mt-0.5 leading-relaxed">
                 {currentModel.validationDetails}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Code & Empirical Case Study (5 cols) */}
-        <div className="lg:col-span-5 flex flex-col gap-5">
+        {/* Right Column: Code & Empirical Case */}
+        <div className="lg:col-span-5 flex flex-col gap-3">
           {/* Code Implementation Card */}
-          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
-              <div className="flex items-center gap-2">
-                <Code2 className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-bold text-white uppercase tracking-wider">
-                  Script de Python 3.10
+          <div className="bg-white border border-purple-200 rounded-2xl p-3.5 shadow-sm flex flex-col">
+            <div className="flex items-center justify-between border-b border-purple-100 pb-1.5 mb-2">
+              <div className="flex items-center gap-1.5">
+                <Code2 className="w-4 h-4 text-purple-700" />
+                <span className="text-xs font-black text-slate-900 uppercase">
+                  Código Python 3.10
                 </span>
               </div>
-              <span className="text-[10px] font-mono text-slate-400">Reproducibilidad</span>
+              <span className="text-[9px] font-mono text-purple-700 font-bold">Reproducible</span>
             </div>
 
-            <pre className="bg-slate-900/90 text-slate-200 p-3.5 rounded-xl font-mono text-[11px] sm:text-xs overflow-x-auto leading-relaxed border border-slate-800/60">
+            <pre className="bg-purple-950 text-purple-100 p-3 rounded-xl font-mono text-[10px] sm:text-[11px] overflow-x-auto leading-relaxed border border-purple-900">
               <code>{currentModel.pythonCode}</code>
             </pre>
           </div>
 
-          {/* Empirical Highlights in SENAJU Paper */}
-          <div className="bg-gradient-to-br from-indigo-950/50 to-purple-950/40 border border-indigo-500/30 rounded-2xl p-5 shadow-lg flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-indigo-400" />
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                Aplicación en el Manuscrito ENAHO 2025
+          {/* Empirical Findings Box */}
+          <div className="bg-gradient-to-br from-purple-50 via-white to-pink-50 border border-purple-200 rounded-2xl p-4 shadow-sm flex flex-col gap-2">
+            <div className="flex items-center gap-1.5">
+              <BookOpen className="w-4 h-4 text-purple-700" />
+              <h3 className="text-xs font-black text-slate-900 uppercase">
+                Evidencia Empírica en SENAJU 2026
               </h3>
             </div>
 
             {activeModelId === 'k-prototypes' && (
-              <div className="text-xs text-slate-300 flex flex-col gap-2 leading-relaxed">
-                <p>
-                  • Evaluado en <strong className="text-white">N = 13,361</strong> observaciones de la PEA juvenil.
-                </p>
-                <p>
-                  • Descubrió que los jóvenes no se dividen por categorías binarias simplistas, sino en 4 constelaciones complejas donde la etnicidad rural y la juventud temprana urbana tienen dinámicas laborales opuestas.
-                </p>
+              <div className="text-xs text-slate-700 flex flex-col gap-1.5 leading-relaxed">
+                <p>• Muestra representativa de <strong className="text-purple-950 font-bold">N = 13,361</strong> jóvenes en la PEA.</p>
+                <p>• Los 4 clústeres revelan que la juventud rural con lengua nativa y la juventud urbana de 18 años viven realidades ocupacionales opuestas.</p>
               </div>
             )}
 
             {activeModelId === 'logit' && (
-              <div className="text-xs text-slate-300 flex flex-col gap-2 leading-relaxed">
-                <p>
-                  • Estimó que la brecha de género es máxima en el <strong className="text-pink-300">Clúster 2 (OR = 0.65; p &lt; 0.001)</strong>, confirmando la hipótesis de desventaja formativo-laboral inicial.
-                </p>
-                <p>
-                  • Detectó que en el <strong className="text-emerald-300">Clúster 4 (Rural)</strong> la educación formal rinde un <strong className="text-white">+31% por año (OR = 1.31)</strong> en los momios de empleo.
-                </p>
+              <div className="text-xs text-slate-700 flex flex-col gap-1.5 leading-relaxed">
+                <p>• Brecha de género máxima en <strong className="text-pink-700 font-bold">Clúster 2 (OR = 0.65; p &lt; 0.001)</strong>.</p>
+                <p>• Retorno extraordinario a la escolaridad en <strong className="text-emerald-700 font-bold">Clúster 4 Rural (OR = 1.31, +31% por año)</strong>.</p>
               </div>
             )}
 
             {activeModelId === 'xgboost' && (
-              <div className="text-xs text-slate-300 flex flex-col gap-2 leading-relaxed">
-                <p>
-                  • Superó al Logit en <strong className="text-emerald-300">+19.3% de AUC-ROC (0.785 vs 0.658)</strong>.
-                </p>
-                <p>
-                  • Fue capaz de identificar patrones no lineales y umbrales en edades críticas (18-20 años) que los modelos lineales ignoraban.
-                </p>
+              <div className="text-xs text-slate-700 flex flex-col gap-1.5 leading-relaxed">
+                <p>• Superioridad discriminatoria frente al Logit: <strong className="text-purple-950 font-bold">AUC 0.785 vs 0.658 (+19.3%)</strong>.</p>
+                <p>• Captura umbrales de edad crítica y cargas de cuidado que los modelos lineales subestiman.</p>
               </div>
             )}
 
             {activeModelId === 'treeshap' && (
-              <div className="text-xs text-slate-300 flex flex-col gap-2 leading-relaxed">
-                <p>
-                  • Cuantificó que la ruralidad ejerce el mayor impulso individual positivo (<strong className="text-white">&phi; &approx; +0.18</strong>) debido a la absorción agraria.
-                </p>
-                <p>
-                  • Demostró que ser mujer joven resta hasta <strong className="text-rose-400">&phi; &approx; -0.19</strong> a la probabilidad de estar ocupada formalmente.
-                </p>
+              <div className="text-xs text-slate-700 flex flex-col gap-1.5 leading-relaxed">
+                <p>• Ruralidad ejerce el mayor impulso individual (<strong className="text-purple-950 font-bold">&phi; &approx; +0.18</strong>).</p>
+                <p>• Ser mujer joven resta hasta <strong className="text-rose-700 font-bold">&phi; &approx; -0.19</strong> en probabilidad de empleo formal.</p>
               </div>
             )}
 
             {activeModelId === 'dml' && (
-              <div className="text-xs text-slate-300 flex flex-col gap-2 leading-relaxed">
-                <p>
-                  • Eliminó el sesgo de regularización generado por algoritmos de árboles, aislando el parámetro causal puro de la interseccionalidad.
-                </p>
-                <p>
-                  • Comprobó un efecto causal neto de <strong className="text-rose-400">-7.4 puntos porcentuales</strong> atribuible exclusivamente a discriminación y segmentación estructural de mercado.
-                </p>
+              <div className="text-xs text-slate-700 flex flex-col gap-1.5 leading-relaxed">
+                <p>• Aislamiento del efecto causal puro con <strong className="text-purple-950 font-bold">Ortogonalidad de Neyman</strong>.</p>
+                <p>• Confirma penalización pura de <strong className="text-rose-700 font-bold">-7.4 puntos porcentuales</strong> atribuible a discriminación estructural.</p>
               </div>
             )}
           </div>

@@ -4,7 +4,6 @@ import { CLUSTERS } from '../../data/paperData';
 export default function ForestPlot() {
   const [activeFilter, setActiveFilter] = useState('all');
 
-  // Collect all odds ratios
   const items = CLUSTERS.flatMap((c) =>
     c.oddsRatios.map((item) => ({
       ...item,
@@ -20,11 +19,11 @@ export default function ForestPlot() {
 
   const minVal = 0.4;
   const maxVal = 2.2;
-  const width = 600;
-  const rowHeight = 36;
-  const height = filteredItems.length * rowHeight + 60;
-  const plotLeft = 210;
-  const plotRight = width - 40;
+  const width = 560;
+  const rowHeight = 32;
+  const height = filteredItems.length * rowHeight + 50;
+  const plotLeft = 190;
+  const plotRight = width - 35;
   const plotWidth = plotRight - plotLeft;
 
   const getX = (val) => {
@@ -35,51 +34,51 @@ export default function ForestPlot() {
   const xNull = getX(1.0);
 
   return (
-    <div className="w-full flex flex-col items-center">
-      {/* Controls */}
-      <div className="flex flex-wrap items-center justify-between w-full gap-2 mb-3">
-        <div className="flex items-center gap-1.5 text-xs text-slate-300">
-          <span className="font-semibold text-indigo-400">Filtrar por Grupo:</span>
+    <div className="w-full flex flex-col items-center max-w-xl mx-auto">
+      {/* Minimal Top Bar */}
+      <div className="flex items-center justify-between w-full gap-2 mb-2 px-1 text-[11px]">
+        <div className="flex items-center gap-1.5 text-slate-700">
+          <span className="font-bold text-purple-700">Grupo:</span>
           <select
             value={activeFilter}
             onChange={(e) => setActiveFilter(e.target.value)}
-            className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+            className="bg-purple-50 border border-purple-200 rounded-lg px-2 py-0.5 text-[11px] font-semibold text-purple-900 focus:outline-none"
           >
-            <option value="all">Todos los Clústeres (Consolidado)</option>
+            <option value="all">Todos los Clústeres</option>
             {CLUSTERS.map((c) => (
               <option key={c.id} value={c.id}>
-                Clúster {c.id}: {c.name}
+                C{c.id}: {c.name.split(' ')[0]}
               </option>
             ))}
           </select>
         </div>
 
-        <div className="flex items-center gap-3 text-[11px] text-slate-400">
+        <div className="flex items-center gap-3 text-[10px] text-slate-600 font-semibold">
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" />
-            Penalización (OR &lt; 1)
+            <span className="w-2 h-2 rounded-full bg-rose-600 inline-block" />
+            Penalización (&lt;1)
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
-            Ventaja / Impulso (OR &gt; 1)
+            <span className="w-2 h-2 rounded-full bg-emerald-600 inline-block" />
+            Impulso (&gt;1)
           </span>
         </div>
       </div>
 
-      <div className="w-full overflow-x-auto bg-slate-950/70 border border-slate-800/80 rounded-xl p-3 shadow-inner">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[560px]">
+      <div className="w-full overflow-x-auto bg-white border border-purple-200 rounded-xl p-2.5 shadow-sm">
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[500px]">
           {/* Header Axis */}
-          <line x1={plotLeft} y1={25} x2={plotRight} y2={25} stroke="#334155" strokeWidth="1" />
+          <line x1={plotLeft} y1={22} x2={plotRight} y2={22} stroke="#cbd5e1" strokeWidth="1" />
           {[0.5, 0.75, 1.0, 1.25, 1.5, 2.0].map((tick) => {
             const tx = getX(tick);
             return (
               <g key={tick}>
-                <line x1={tx} y1={22} x2={tx} y2={28} stroke="#64748b" strokeWidth="1" />
+                <line x1={tx} y1={19} x2={tx} y2={25} stroke="#94a3b8" strokeWidth="1" />
                 <text
                   x={tx}
-                  y={16}
+                  y={14}
                   textAnchor="middle"
-                  className={`text-[10px] font-mono ${tick === 1.0 ? 'fill-indigo-300 font-bold' : 'fill-slate-400'}`}
+                  className={`text-[9px] font-mono ${tick === 1.0 ? 'fill-purple-700 font-black' : 'fill-slate-500'}`}
                 >
                   {tick.toFixed(2)}
                 </text>
@@ -87,65 +86,57 @@ export default function ForestPlot() {
             );
           })}
 
-          {/* Reference Line at OR = 1.0 */}
+          {/* Neutral Baseline */}
           <line
             x1={xNull}
-            y1={25}
+            y1={22}
             x2={xNull}
-            y2={height - 20}
-            stroke="#6366f1"
+            y2={height - 18}
+            stroke="#7c3aed"
             strokeWidth="1.5"
-            strokeDasharray="4 4"
+            strokeDasharray="3 3"
           />
           <text
             x={xNull}
-            y={height - 8}
+            y={height - 6}
             textAnchor="middle"
-            className="text-[9px] font-mono fill-indigo-400 font-bold"
+            className="text-[8px] font-mono fill-purple-700 font-bold"
           >
-            Línea Base Neutra (OR = 1.0)
+            Base (OR=1.0)
           </text>
 
           {/* Rows */}
           {filteredItems.map((item, idx) => {
-            const y = 50 + idx * rowHeight;
+            const y = 42 + idx * rowHeight;
             const xVal = getX(item.or);
             const xLow = getX(item.ciLow);
             const xHigh = getX(item.ciHigh);
             const isDisadvantage = item.or < 1.0;
             const pointColor = item.critical
-              ? (isDisadvantage ? '#f43f5e' : '#10b981')
-              : (item.sig ? item.clusterColor : '#94a3b8');
+              ? (isDisadvantage ? '#e11d48' : '#059669')
+              : (item.sig ? item.clusterColor : '#64748b');
 
             return (
-              <g key={`${item.clusterId}-${item.factor}-${idx}`} className="group hover:opacity-100">
-                {/* Background hover highlight */}
+              <g key={`${item.clusterId}-${item.factor}-${idx}`}>
+                {/* Row Hover */}
                 <rect
                   x={0}
-                  y={y - 14}
+                  y={y - 12}
                   width={width}
-                  height={rowHeight - 4}
-                  fill="rgba(255, 255, 255, 0.02)"
-                  className="group-hover:fill-slate-800/40 rounded transition-colors"
+                  height={rowHeight - 3}
+                  fill={idx % 2 === 0 ? '#faf5ff' : '#ffffff'}
+                  className="rounded"
                 />
 
-                {/* Label & Cluster */}
-                <text
-                  x={12}
-                  y={y - 2}
-                  className="text-[11px] font-medium fill-slate-200"
-                >
+                {/* Factor Label */}
+                <text x={8} y={y - 1} className="text-[10px] font-bold fill-slate-800">
                   {item.factor}
                 </text>
-                <text
-                  x={12}
-                  y={y + 10}
-                  className="text-[9px] font-mono fill-slate-400"
-                >
-                  Clúster {item.clusterId} • {item.clusterName.split(' ')[0]}
+                <text x={8} y={y + 10} className="text-[8px] font-mono fill-purple-700">
+                  C{item.clusterId} • {item.clusterName.split(' ')[0]}
                 </text>
 
-                {/* Confidence Interval Whisker */}
+                {/* Whisker Line */}
                 <line
                   x1={xLow}
                   y1={y}
@@ -155,29 +146,28 @@ export default function ForestPlot() {
                   strokeWidth="2"
                   strokeOpacity={item.sig ? 0.9 : 0.4}
                 />
-                {/* Whiskers End Caps */}
-                <line x1={xLow} y1={y - 4} x2={xLow} y2={y + 4} stroke={pointColor} strokeWidth="1.5" />
-                <line x1={xHigh} y1={y - 4} x2={xHigh} y2={y + 4} stroke={pointColor} strokeWidth="1.5" />
+                <line x1={xLow} y1={y - 3} x2={xLow} y2={y + 3} stroke={pointColor} strokeWidth="1.5" />
+                <line x1={xHigh} y1={y - 3} x2={xHigh} y2={y + 3} stroke={pointColor} strokeWidth="1.5" />
 
-                {/* Point Estimate Circle or Square */}
+                {/* Point */}
                 <circle
                   cx={xVal}
                   cy={y}
-                  r={item.critical ? "5.5" : "4.5"}
+                  r={item.critical ? "4.5" : "3.5"}
                   fill={pointColor}
                   stroke="#ffffff"
-                  strokeWidth="1.5"
+                  strokeWidth="1.2"
                 />
 
                 {/* Value Text */}
                 <text
-                  x={width - 8}
+                  x={width - 5}
                   y={y + 3}
                   textAnchor="end"
-                  className={`text-[10px] font-mono ${item.sig ? 'font-bold fill-white' : 'fill-slate-400'}`}
+                  className={`text-[9px] font-mono ${item.sig ? 'font-bold fill-slate-900' : 'fill-slate-500'}`}
                 >
                   {item.or.toFixed(2)}
-                  <tspan className="text-[9px] fill-slate-400"> (p={item.p < 0.001 ? '<.001' : item.p.toFixed(3)})</tspan>
+                  <tspan className="text-[8px] fill-slate-500"> (p={item.p < 0.001 ? '<.001' : item.p.toFixed(3)})</tspan>
                 </text>
               </g>
             );

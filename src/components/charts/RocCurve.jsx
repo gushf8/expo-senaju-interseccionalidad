@@ -3,15 +3,11 @@ import React, { useState } from 'react';
 export default function RocCurve() {
   const [hoverX, setHoverX] = useState(null);
 
-  const size = 380;
-  const pad = 50;
+  const size = 320;
+  const pad = 42;
   const plotSize = size - pad * 2;
 
-  // Generate realistic smooth ROC points
-  // Chance: y = x
-  // Logit (AUC ~ 0.658): y = x^0.55
-  // XGBoost (AUC ~ 0.785): y = x^0.28
-  const steps = 40;
+  const steps = 30;
   const logitPoints = [];
   const xgbPoints = [];
 
@@ -31,13 +27,11 @@ export default function RocCurve() {
   const logitPath = logitPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
   const xgbPath = xgbPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
   const diagonalPath = `M ${pad} ${pad + plotSize} L ${pad + plotSize} ${pad}`;
-
-  // Fill areas
   const xgbArea = `${xgbPath} L ${pad + plotSize} ${pad + plotSize} L ${pad} ${pad + plotSize} Z`;
 
   return (
-    <div className="w-full flex flex-col items-center">
-      <div className="relative w-full max-w-[380px] aspect-square flex items-center justify-center bg-slate-950/70 border border-slate-800 rounded-xl p-2 shadow-inner">
+    <div className="w-full flex flex-col items-center max-w-[340px] mx-auto">
+      <div className="relative w-full aspect-square flex items-center justify-center bg-white border border-purple-200 rounded-2xl p-2 shadow-sm">
         <svg
           viewBox={`0 0 ${size} ${size}`}
           className="w-full h-full overflow-visible"
@@ -51,21 +45,19 @@ export default function RocCurve() {
           onMouseLeave={() => setHoverX(null)}
         >
           {/* Shaded Area for XGBoost Gain */}
-          <path d={xgbArea} fill="rgba(16, 185, 129, 0.12)" />
+          <path d={xgbArea} fill="rgba(124, 58, 237, 0.08)" />
 
           {/* Grid lines */}
           {[0, 0.2, 0.4, 0.6, 0.8, 1.0].map((t) => {
             const pos = pad + t * plotSize;
             return (
               <g key={t}>
-                {/* Horizontal */}
-                <line x1={pad} y1={pos} x2={pad + plotSize} y2={pos} stroke="#1e293b" strokeWidth="1" strokeDasharray="3 3" />
-                <text x={pad - 8} y={pos + 4} textAnchor="end" className="text-[10px] font-mono fill-slate-400">
+                <line x1={pad} y1={pos} x2={pad + plotSize} y2={pos} stroke="#f1f5f9" strokeWidth="1" />
+                <text x={pad - 5} y={pos + 3} textAnchor="end" className="text-[8px] font-mono fill-slate-500">
                   {(1 - t).toFixed(1)}
                 </text>
-                {/* Vertical */}
-                <line x1={pos} y1={pad} x2={pos} y2={pad + plotSize} stroke="#1e293b" strokeWidth="1" strokeDasharray="3 3" />
-                <text x={pos} y={pad + plotSize + 16} textAnchor="middle" className="text-[10px] font-mono fill-slate-400">
+                <line x1={pos} y1={pad} x2={pos} y2={pad + plotSize} stroke="#f1f5f9" strokeWidth="1" />
+                <text x={pos} y={pad + plotSize + 12} textAnchor="middle" className="text-[8px] font-mono fill-slate-500">
                   {t.toFixed(1)}
                 </text>
               </g>
@@ -73,67 +65,60 @@ export default function RocCurve() {
           })}
 
           {/* Diagonal Chance Line */}
-          <path d={diagonalPath} stroke="#64748b" strokeWidth="1.5" strokeDasharray="4 4" />
+          <path d={diagonalPath} stroke="#cbd5e1" strokeWidth="1.2" strokeDasharray="3 3" />
 
           {/* Logit ROC Curve */}
-          <path d={logitPath} fill="none" stroke="#38bdf8" strokeWidth="2.5" />
+          <path d={logitPath} fill="none" stroke="#6366f1" strokeWidth="2" />
 
           {/* XGBoost ROC Curve */}
-          <path d={xgbPath} fill="none" stroke="#10b981" strokeWidth="3" />
+          <path d={xgbPath} fill="none" stroke="#7c3aed" strokeWidth="3" />
 
           {/* Axes labels */}
           <text
             x={pad + plotSize / 2}
-            y={size - 4}
+            y={size - 2}
             textAnchor="middle"
-            className="text-[11px] font-semibold fill-slate-300"
+            className="text-[9px] font-bold fill-slate-700"
           >
-            Tasa de Falsos Positivos (1 - Especificidad)
+            Falsos Positivos (1 - Esp)
           </text>
           <text
-            x={14}
+            x={10}
             y={pad + plotSize / 2}
             textAnchor="middle"
-            transform={`rotate(-90, 14, ${pad + plotSize / 2})`}
-            className="text-[11px] font-semibold fill-slate-300"
+            transform={`rotate(-90, 10, ${pad + plotSize / 2})`}
+            className="text-[9px] font-bold fill-slate-700"
           >
-            Sensibilidad (True Positive Rate)
+            Sensibilidad (TPR)
           </text>
 
-          {/* Interactive Hover Point */}
+          {/* Hover */}
           {hoverX !== null && (() => {
             const fpr = (hoverX - pad) / plotSize;
-            const tprLogit = Math.pow(fpr, 0.58) * 0.96 + fpr * 0.04;
             const tprXgb = Math.pow(fpr, 0.28) * 0.98 + fpr * 0.02;
-            const pyLogit = pad + (1 - tprLogit) * plotSize;
             const pyXgb = pad + (1 - tprXgb) * plotSize;
-
             return (
-              <g>
-                <line x1={hoverX} y1={pad} x2={hoverX} y2={pad + plotSize} stroke="#818cf8" strokeWidth="1" strokeDasharray="2 2" />
-                <circle cx={hoverX} cy={pyLogit} r="4" fill="#38bdf8" stroke="#fff" strokeWidth="1.5" />
-                <circle cx={hoverX} cy={pyXgb} r="5" fill="#10b981" stroke="#fff" strokeWidth="2" />
-              </g>
+              <circle cx={hoverX} cy={pyXgb} r="4" fill="#7c3aed" stroke="#fff" strokeWidth="1.5" />
             );
           })()}
         </svg>
       </div>
 
-      {/* Legend & AUC Comparison */}
-      <div className="grid grid-cols-2 gap-3 mt-3 w-full max-w-[380px]">
-        <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-lg p-2.5 flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-emerald-400 flex-shrink-0" />
-          <div className="overflow-hidden">
-            <div className="text-xs font-bold text-emerald-200">XGBoost / RF</div>
-            <div className="text-[10px] text-slate-300 font-mono">AUC = 0.785 (+19.3%)</div>
+      {/* Badges */}
+      <div className="grid grid-cols-2 gap-2 mt-2 w-full">
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-1.5 flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-purple-600 flex-shrink-0" />
+          <div className="truncate">
+            <div className="text-[10px] font-bold text-purple-950">XGBoost / RF</div>
+            <div className="text-[9px] text-purple-700 font-mono font-semibold">AUC = 0.785 (+19%)</div>
           </div>
         </div>
 
-        <div className="bg-sky-950/40 border border-sky-500/30 rounded-lg p-2.5 flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-sky-400 flex-shrink-0" />
-          <div className="overflow-hidden">
-            <div className="text-xs font-bold text-sky-200">Logit Multivariado</div>
-            <div className="text-[10px] text-slate-300 font-mono">AUC = 0.658 (Base)</div>
+        <div className="bg-slate-50 border border-slate-200 rounded-lg p-1.5 flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 flex-shrink-0" />
+          <div className="truncate">
+            <div className="text-[10px] font-bold text-slate-800">Logit Clásico</div>
+            <div className="text-[9px] text-slate-600 font-mono">AUC = 0.658 (Base)</div>
           </div>
         </div>
       </div>

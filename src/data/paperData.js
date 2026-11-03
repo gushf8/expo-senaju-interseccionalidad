@@ -24,9 +24,9 @@ export const CLUSTERS = [
     name: "Urbano Mestizo Pleno",
     share: 40.4,
     n: 5397,
-    color: "#38bdf8",
-    accentBg: "rgba(56, 189, 248, 0.15)",
-    borderColor: "rgba(56, 189, 248, 0.4)",
+    color: "#7c3aed", // Royal Purple
+    accentBg: "rgba(124, 58, 237, 0.08)",
+    borderColor: "rgba(124, 58, 237, 0.35)",
     badge: "Mayoría consolidada",
     metrics: {
       mujeres: 38.6,
@@ -53,9 +53,9 @@ export const CLUSTERS = [
     name: "Jóvenes en Transición Formativa",
     share: 39.7,
     n: 5299,
-    color: "#ec4899",
-    accentBg: "rgba(236, 72, 153, 0.15)",
-    borderColor: "rgba(236, 72, 153, 0.4)",
+    color: "#db2777", // Fuchsia / Rose Deep
+    accentBg: "rgba(219, 39, 119, 0.08)",
+    borderColor: "rgba(219, 39, 119, 0.35)",
     badge: "Punto de Máxima Brecha",
     metrics: {
       mujeres: 42.4,
@@ -82,9 +82,9 @@ export const CLUSTERS = [
     name: "Vulnerables Periurbanos",
     share: 15.0,
     n: 1998,
-    color: "#eab308",
-    accentBg: "rgba(234, 179, 8, 0.15)",
-    borderColor: "rgba(234, 179, 8, 0.4)",
+    color: "#b45309", // Warm Amber
+    accentBg: "rgba(180, 83, 9, 0.08)",
+    borderColor: "rgba(180, 83, 9, 0.35)",
     badge: "Presión de Cuidado Extremo",
     metrics: {
       mujeres: 48.9,
@@ -111,9 +111,9 @@ export const CLUSTERS = [
     name: "Rural Originario Agrario",
     share: 5.0,
     n: 667,
-    color: "#10b981",
-    accentBg: "rgba(16, 185, 129, 0.15)",
-    borderColor: "rgba(16, 185, 129, 0.4)",
+    color: "#059669", // Emerald Green
+    accentBg: "rgba(5, 150, 105, 0.08)",
+    borderColor: "rgba(5, 150, 105, 0.35)",
     badge: "Mayor Retorno al Capital Humano",
     metrics: {
       mujeres: 35.1,
@@ -143,7 +143,7 @@ export const THEORETICAL_MODELS = [
     name: "K-Prototypes Clustering",
     subtitle: "Segmentación no supervisada para datos mixtos (Huang, 1998)",
     badge: "Fase 1: No Supervisada",
-    tagColor: "indigo",
+    tagColor: "purple",
     whyUsed: "La ENAHO combina simultáneamente variables numéricas continuas (edad, escolaridad, dependientes) con variables categóricas nominales y ordinales (etnia, lengua, ámbito, pobreza). K-Means colapsa con datos categóricos y K-Modes destruye distancias continuas. K-Prototypes unifica ambos mundos.",
     formulaTeX: `E = \\sum_{j=1}^{k} \\sum_{i=1}^{n} u_{ij} \\left[ \\sum_{r=1}^{p} (x_{ir} - m_{jr})^2 + \\gamma \\sum_{s=1}^{q} \\delta(x_{is}, m_{js}) \\right]`,
     components: [
@@ -172,7 +172,7 @@ clusters = kproto.fit_predict(X_mixed, categorical=[2, 3, 4, 6])`
     name: "Regresión Logística Multivariada",
     subtitle: "Inferencia causal y razones de momios (Odds Ratios)",
     badge: "Fase 2: Inferencia Econométrica",
-    tagColor: "sky",
+    tagColor: "purple",
     whyUsed: "Permite estimar el efecto ceteris paribus de las variables interseccionales (género, etnicidad, lengua) sobre la probabilidad de ocupación en la PEA dentro de cada subpoblación homogénea descubierta por el clustering.",
     formulaTeX: `\\ln\\left(\\frac{P(Y=1|X)}{1 - P(Y=1|X)}\\right) = \\beta_0 + \\beta_{sexo}\\text{Mujer} + \\beta_{etnia}\\text{Originaria} + \\beta_{lengua}\\text{Nativa} + \\beta_{educ}\\text{Educ} + \\sum_{m} \\theta_m Z_m`,
     components: [
@@ -199,7 +199,7 @@ for c in range(1, 5):
     name: "Ensamble Supervisado (Random Forest & XGBoost)",
     subtitle: "Aprendizaje no lineal de gradiente optimizado",
     badge: "Fase 3: Modelamiento Predictivo",
-    tagColor: "emerald",
+    tagColor: "purple",
     whyUsed: "La tasa base de ocupación en la PEA juvenil es muy desbalanceada (91.1%). Los modelos lineales subestiman umbrales críticos y no linealidades. XGBoost y Random Forest capturan interacciones complejas de orden superior.",
     formulaTeX: `\\mathcal{L}^{(t)} \\approx \\sum_{i=1}^{n} \\left[ g_i f_t(x_i) + \\frac{1}{2} h_i f_t^2(x_i) \\right] + \\gamma T + \\frac{1}{2} \\lambda \\sum_{j=1}^{T} w_j^2`,
     components: [
@@ -253,7 +253,7 @@ shap.summary_plot(shap_values, X_test, plot_type="dot")`
     name: "Double Machine Learning (DML)",
     subtitle: "Inferencia Causal Libre de Sesgo de Regularización (Chernozhukov et al., 2018)",
     badge: "Fase 5: Inferencia Causal Robusta",
-    tagColor: "rose",
+    tagColor: "purple",
     whyUsed: "Al usar ML estándar para inferir efectos causales, los algoritmos introducen sesgo de regularización (encogimiento de parámetros). DML elimina este sesgo aplicando ortogonalidad de Neyman y estimación cruzada (Cross-Fitting), aislando el impacto causal puro de la interseccionalidad.",
     formulaTeX: `\\psi(W; \\theta_0, \\eta_0) = \\big( Y - \\ell_0(X) - \\theta_0 (D - m_0(X)) \\big) \\big( D - m_0(X) \\big) = 0`,
     components: [
@@ -486,8 +486,8 @@ export const SIMULATION_BASE_STATS = {
   overallEmploymentRate: 0.911,
   featureShapWeights: {
     sexoMujer: -0.19,
-    edadBase: 0.015, // Por año por encima de 18
-    educBase: 0.022, // Por año de estudio
+    edadBase: 0.015,
+    educBase: 0.022,
     ruralidad: 0.18,
     lenguaNativa: -0.04,
     etniaOriginaria: -0.05,

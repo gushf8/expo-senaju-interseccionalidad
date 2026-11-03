@@ -1,105 +1,86 @@
 import React, { useState, useMemo } from 'react';
 import { CLUSTERS, SIMULATION_BASE_STATS } from '../data/paperData';
 import ShapWaterfall from './charts/ShapWaterfall';
-import MathView from './MathView';
-import { Sparkles, Sliders, User, Info, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Sparkles, Sliders, User, Info, CheckCircle2, ChevronRight, Compass } from 'lucide-react';
 
 export default function InteractiveLab() {
-  // Person State
-  const [sexo, setSexo] = useState('mujer'); // 'mujer' | 'hombre'
+  const [sexo, setSexo] = useState('mujer');
   const [edad, setEdad] = useState(19);
   const [escolaridad, setEscolaridad] = useState(10);
-  const [ambito, setAmbito] = useState('urbano'); // 'urbano' | 'rural'
-  const [etnia, setEtnia] = useState('originaria'); // 'originaria' | 'mestizo' | 'afro' | 'blanco'
-  const [lengua, setLengua] = useState('nativa'); // 'nativa' | 'castellano'
+  const [ambito, setAmbito] = useState('urbano');
+  const [etnia, setEtnia] = useState('originaria');
+  const [lengua, setLengua] = useState('nativa');
   const [ninosMenores5, setNinosMenores5] = useState(1);
   const [adultosMayores, setAdultosMayores] = useState(0);
 
-  // K-Prototypes distance assignment simulation
+  // K-Prototypes clustering simulation
   const assignedCluster = useMemo(() => {
-    // Score based on features
     if (ambito === 'rural' || (etnia === 'originaria' && escolaridad <= 7)) {
-      return CLUSTERS[3]; // Rural Originario
+      return CLUSTERS[3];
     }
     if (ninosMenores5 >= 1 && (escolaridad <= 9 || edad >= 23)) {
-      return CLUSTERS[2]; // Periurbano vulnerable
+      return CLUSTERS[2];
     }
     if (edad <= 20) {
-      return CLUSTERS[1]; // Transición formativa
+      return CLUSTERS[1];
     }
-    return CLUSTERS[0]; // Urbano mestizo pleno
+    return CLUSTERS[0];
   }, [sexo, edad, escolaridad, ambito, etnia, lengua, ninosMenores5]);
 
   // SHAP Waterfall calculations
   const shapBreakdown = useMemo(() => {
     const list = [];
 
-    // Ámbito
     const isRural = ambito === 'rural';
     const ruralImpact = isRural ? 0.082 : -0.021;
     list.push({
       name: 'Ámbito Geográfico',
-      featureDisplay: isRural ? 'Rural (Agrario)' : 'Urbano',
+      featureDisplay: isRural ? 'Rural' : 'Urbano',
       impact: ruralImpact
     });
 
-    // Edad
     const edadDiff = edad - 22;
     const edadImpact = Number((edadDiff * 0.007).toFixed(3));
     list.push({
       name: 'Edad Cumplida',
-      featureDisplay: `${edad} años (${edadDiff >= 0 ? '+' : ''}${edadDiff} vs media)`,
+      featureDisplay: `${edad} años`,
       impact: edadImpact
     });
 
-    // Sexo
     const isMujer = sexo === 'mujer';
     let sexImpact = isMujer ? -0.045 : 0.025;
-    // Interaction: if in Transition group (age <= 20), gender penalty is even harsher
     if (isMujer && edad <= 20) {
       sexImpact -= 0.035;
     }
     list.push({
       name: 'Sexo Biológico',
-      featureDisplay: isMujer ? 'Mujer (Femenino)' : 'Varón (Masculino)',
+      featureDisplay: isMujer ? 'Mujer' : 'Varón',
       impact: Number(sexImpact.toFixed(3))
     });
 
-    // Carga de Cuidado (Niños < 5)
     let ninosImpact = 0;
     if (ninosMenores5 > 0) {
-      if (isMujer) {
-        ninosImpact = -0.038 * ninosMenores5;
-      } else {
-        // En varones opera como presión para buscar cualquier trabajo
-        ninosImpact = 0.018 * ninosMenores5;
-      }
+      ninosImpact = isMujer ? -0.038 * ninosMenores5 : 0.018 * ninosMenores5;
     }
     list.push({
-      name: 'Carga de Cuidado (<5 años)',
-      featureDisplay: `${ninosMenores5} niños dependientes`,
+      name: 'Niños < 5 años',
+      featureDisplay: `${ninosMenores5} infantes`,
       impact: Number(ninosImpact.toFixed(3))
     });
 
-    // Escolaridad
     const educDiff = escolaridad - 11;
-    let educImpact = educDiff * 0.009;
-    if (isRural) {
-      // Retorno extraordinario en rural
-      educImpact = educDiff * 0.016;
-    }
+    let educImpact = isRural ? educDiff * 0.016 : educDiff * 0.009;
     list.push({
-      name: 'Años de Escolaridad',
-      featureDisplay: `${escolaridad} años formales`,
+      name: 'Escolaridad Formal',
+      featureDisplay: `${escolaridad} años`,
       impact: Number(educImpact.toFixed(3))
     });
 
-    // Etnia y Lengua
     if (etnia === 'originaria' || lengua === 'nativa') {
       const etniaImpact = isRural ? 0.008 : -0.024;
       list.push({
-        name: 'Identidad Étnico-Lingüística',
-        featureDisplay: `${etnia === 'originaria' ? 'Etnia Indígena' : 'Mestizo/Otro'} • ${lengua === 'nativa' ? 'Lengua Nativa' : 'Castellano'}`,
+        name: 'Identidad Étnica',
+        featureDisplay: `${etnia === 'originaria' ? 'Indígena' : 'Mestizo'}`,
         impact: Number(etniaImpact.toFixed(3))
       });
     }
@@ -107,7 +88,6 @@ export default function InteractiveLab() {
     return list;
   }, [sexo, edad, escolaridad, ambito, etnia, lengua, ninosMenores5]);
 
-  // Final predicted probability
   const predictedProb = useMemo(() => {
     let p = SIMULATION_BASE_STATS.overallEmploymentRate;
     shapBreakdown.forEach((item) => {
@@ -117,27 +97,27 @@ export default function InteractiveLab() {
   }, [shapBreakdown]);
 
   return (
-    <div className="w-full flex flex-col gap-6">
-      {/* Top Banner */}
-      <div className="bg-gradient-to-r from-indigo-950/70 via-purple-950/40 to-slate-900 border border-indigo-500/30 rounded-2xl p-5 shadow-xl">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="w-full flex flex-col gap-4 max-w-6xl mx-auto">
+      {/* Top Banner - White & Purple */}
+      <div className="bg-gradient-to-r from-purple-50 via-white to-pink-50 border border-purple-200 rounded-2xl p-4 sm:p-5 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                Laboratorio Interactivo de Microdatos
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-purple-100 text-purple-900 border border-purple-200">
+                Laboratorio Interactivo
               </span>
-              <span className="text-xs text-slate-400 font-mono">ENAHO 2025 • N = 13,361</span>
+              <span className="text-[10px] text-slate-500 font-mono font-bold">ENAHO 2025 • N=13,361</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white mt-1">
-              Simulador Etnodemográfico & Algorítmico en Tiempo Real
+            <h2 className="text-lg sm:text-xl font-black text-slate-900">
+              Simulador Etnodemográfico & Algorítmico
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-              Configura los atributos de un joven peruano y observa cómo el algoritmo <strong>K-Prototypes</strong> lo clasifica, qué <strong>Odds Ratio</strong> aplica y cómo <strong>TreeSHAP</strong> descompone su probabilidad de ocupación.
+            <p className="text-xs text-slate-600 mt-0.5">
+              Ajusta los atributos y observa la clasificación <strong>K-Prototypes</strong> y la descomposición <strong>TreeSHAP</strong>.
             </p>
           </div>
 
-          {/* Quick Presets */}
-          <div className="flex flex-wrap gap-2">
+          {/* Quick Presets for Mobile */}
+          <div className="flex flex-wrap gap-1.5">
             <button
               onClick={() => {
                 setSexo('mujer');
@@ -148,9 +128,9 @@ export default function InteractiveLab() {
                 setLengua('castellano');
                 setNinosMenores5(0);
               }}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-pink-950/60 border border-pink-500/40 text-pink-200 hover:bg-pink-900 transition-colors"
+              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-pink-50 border border-pink-200 text-pink-800 hover:bg-pink-100"
             >
-              Caso Clúster 2: Joven 18a (Máxima Brecha)
+              C2: Joven 18a (Brecha Máxima)
             </button>
             <button
               onClick={() => {
@@ -162,9 +142,9 @@ export default function InteractiveLab() {
                 setLengua('nativa');
                 setNinosMenores5(2);
               }}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-950/60 border border-amber-500/40 text-amber-200 hover:bg-amber-900 transition-colors"
+              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 border border-amber-200 text-amber-900 hover:bg-amber-100"
             >
-              Caso Clúster 3: Madre Periurbana (Cuidado)
+              C3: Madre Periurbana (Cuidado)
             </button>
             <button
               onClick={() => {
@@ -176,38 +156,38 @@ export default function InteractiveLab() {
                 setLengua('nativa');
                 setNinosMenores5(1);
               }}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 hover:bg-emerald-900 transition-colors"
+              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 border border-emerald-200 text-emerald-900 hover:bg-emerald-100"
             >
-              Caso Clúster 4: Joven Rural Educado
+              C4: Rural Educado (+31% Retorno)
             </button>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Controls vs Live Inference */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Grid: Controls vs Output */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Controls Column (5 cols) */}
-        <div className="lg:col-span-5 bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col gap-4">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-            <Sliders className="w-5 h-5 text-indigo-400" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-              Variables del Informante (ENAHO)
+        <div className="lg:col-span-5 bg-white border border-purple-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+          <div className="flex items-center gap-1.5 border-b border-purple-100 pb-2">
+            <Sliders className="w-4 h-4 text-purple-700" />
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+              Variables del Informante
             </h3>
           </div>
 
           {/* Sexo */}
           <div>
-            <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
+            <label className="text-[11px] font-bold text-slate-700 mb-1 block">
               1. Sexo Biológico (p207)
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-1.5">
               <button
                 type="button"
                 onClick={() => setSexo('mujer')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
+                className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all border ${
                   sexo === 'mujer'
-                    ? 'bg-pink-600 text-white border-pink-400 shadow-lg shadow-pink-600/30'
-                    : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
+                    ? 'bg-purple-700 text-white border-purple-800 shadow-sm'
+                    : 'bg-purple-50 text-slate-700 border-purple-200 hover:bg-purple-100'
                 }`}
               >
                 Mujer (Femenino)
@@ -215,10 +195,10 @@ export default function InteractiveLab() {
               <button
                 type="button"
                 onClick={() => setSexo('hombre')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
+                className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all border ${
                   sexo === 'hombre'
-                    ? 'bg-sky-600 text-white border-sky-400 shadow-lg shadow-sky-600/30'
-                    : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
+                    ? 'bg-purple-700 text-white border-purple-800 shadow-sm'
+                    : 'bg-purple-50 text-slate-700 border-purple-200 hover:bg-purple-100'
                 }`}
               >
                 Varón (Masculino)
@@ -228,9 +208,9 @@ export default function InteractiveLab() {
 
           {/* Edad */}
           <div>
-            <div className="flex justify-between text-xs font-semibold text-slate-300 mb-1">
-              <span>2. Edad Cumplida (p208a)</span>
-              <span className="font-mono text-indigo-400 font-bold">{edad} años</span>
+            <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-0.5">
+              <span>2. Edad Cumplida</span>
+              <span className="font-mono text-purple-800 font-black">{edad} años</span>
             </div>
             <input
               type="range"
@@ -238,20 +218,15 @@ export default function InteractiveLab() {
               max="29"
               value={edad}
               onChange={(e) => setEdad(Number(e.target.value))}
-              className="w-full accent-indigo-500 cursor-pointer"
+              className="w-full accent-purple-700 cursor-pointer h-1.5"
             />
-            <div className="flex justify-between text-[10px] text-slate-400 font-mono mt-0.5">
-              <span>15 (Adolescente)</span>
-              <span>22 (Intermedio)</span>
-              <span>29 (Adulto Joven)</span>
-            </div>
           </div>
 
           {/* Escolaridad */}
           <div>
-            <div className="flex justify-between text-xs font-semibold text-slate-300 mb-1">
-              <span>3. Años de Escolaridad (p301a)</span>
-              <span className="font-mono text-emerald-400 font-bold">{escolaridad} años</span>
+            <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-0.5">
+              <span>3. Años de Escolaridad</span>
+              <span className="font-mono text-purple-800 font-black">{escolaridad} años</span>
             </div>
             <input
               type="range"
@@ -259,29 +234,23 @@ export default function InteractiveLab() {
               max="18"
               value={escolaridad}
               onChange={(e) => setEscolaridad(Number(e.target.value))}
-              className="w-full accent-emerald-500 cursor-pointer"
+              className="w-full accent-purple-700 cursor-pointer h-1.5"
             />
-            <div className="flex justify-between text-[10px] text-slate-400 font-mono mt-0.5">
-              <span>0 (Sin nivel)</span>
-              <span>6 (Primaria)</span>
-              <span>11 (Secundaria)</span>
-              <span>16 (Superior)</span>
-            </div>
           </div>
 
-          {/* Ámbito Geográfico */}
+          {/* Ámbito */}
           <div>
-            <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
-              4. Ámbito Territorial (estrato)
+            <label className="text-[11px] font-bold text-slate-700 mb-1 block">
+              4. Ámbito Territorial
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-1.5">
               <button
                 type="button"
                 onClick={() => setAmbito('urbano')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
+                className={`py-1.5 px-2 rounded-xl text-xs font-bold border ${
                   ambito === 'urbano'
-                    ? 'bg-indigo-600 text-white border-indigo-400'
-                    : 'bg-slate-800 text-slate-400 border-slate-700'
+                    ? 'bg-purple-700 text-white border-purple-800'
+                    : 'bg-purple-50 text-slate-700 border-purple-200'
                 }`}
               >
                 Urbano / Capital
@@ -289,10 +258,10 @@ export default function InteractiveLab() {
               <button
                 type="button"
                 onClick={() => setAmbito('rural')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
+                className={`py-1.5 px-2 rounded-xl text-xs font-bold border ${
                   ambito === 'rural'
-                    ? 'bg-emerald-600 text-white border-emerald-400'
-                    : 'bg-slate-800 text-slate-400 border-slate-700'
+                    ? 'bg-purple-700 text-white border-purple-800'
+                    : 'bg-purple-50 text-slate-700 border-purple-200'
                 }`}
               >
                 Rural / Agrario
@@ -300,16 +269,16 @@ export default function InteractiveLab() {
             </div>
           </div>
 
-          {/* Autoidentificación Étnica & Lengua */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Etnia & Lengua */}
+          <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
+              <label className="text-[10px] font-bold text-slate-700 mb-1 block">
                 5. Etnia (p558c)
               </label>
               <select
                 value={etnia}
                 onChange={(e) => setEtnia(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-purple-50 border border-purple-200 rounded-xl px-2 py-1.5 text-[11px] font-semibold text-slate-900"
               >
                 <option value="originaria">Indígena / Nativa</option>
                 <option value="mestizo">Mestizo / Criollo</option>
@@ -319,112 +288,82 @@ export default function InteractiveLab() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
+              <label className="text-[10px] font-bold text-slate-700 mb-1 block">
                 6. Lengua (p300a)
               </label>
               <select
                 value={lengua}
                 onChange={(e) => setLengua(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-purple-50 border border-purple-200 rounded-xl px-2 py-1.5 text-[11px] font-semibold text-slate-900"
               >
-                <option value="nativa">Quechua / Aimara / Nativa</option>
+                <option value="nativa">Quechua/Nativa</option>
                 <option value="castellano">Castellano</option>
               </select>
             </div>
           </div>
 
-          {/* Carga de cuidado */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
-                7. Niños &lt; 5 años
-              </label>
-              <div className="flex gap-1.5">
-                {[0, 1, 2, 3].map((num) => (
-                  <button
-                    key={num}
-                    type="button"
-                    onClick={() => setNinosMenores5(num)}
-                    className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                      ninosMenores5 === num
-                        ? 'bg-indigo-600 text-white border-indigo-400'
-                        : 'bg-slate-800 text-slate-400 border-slate-700'
-                    }`}
-                  >
-                    {num === 3 ? '3+' : num}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
-                8. Adultos &gt; 65a
-              </label>
-              <div className="flex gap-1.5">
-                {[0, 1, 2].map((num) => (
-                  <button
-                    key={num}
-                    type="button"
-                    onClick={() => setAdultosMayores(num)}
-                    className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                      adultosMayores === num
-                        ? 'bg-indigo-600 text-white border-indigo-400'
-                        : 'bg-slate-800 text-slate-400 border-slate-700'
-                    }`}
-                  >
-                    {num === 2 ? '2+' : num}
-                  </button>
-                ))}
-              </div>
+          {/* Carga de Cuidado */}
+          <div>
+            <label className="text-[10px] font-bold text-slate-700 mb-1 block">
+              7. Niños &lt; 5 años en el Hogar
+            </label>
+            <div className="flex gap-1">
+              {[0, 1, 2, 3].map((num) => (
+                <button
+                  key={num}
+                  type="button"
+                  onClick={() => setNinosMenores5(num)}
+                  className={`flex-1 py-1 rounded-lg text-xs font-bold border ${
+                    ninosMenores5 === num
+                      ? 'bg-purple-700 text-white border-purple-800'
+                      : 'bg-purple-50 text-slate-700 border-purple-200'
+                  }`}
+                >
+                  {num === 3 ? '3+' : num}
+                </button>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Live Output Column (7 cols) */}
-        <div className="lg:col-span-7 flex flex-col gap-4">
+        <div className="lg:col-span-7 flex flex-col gap-3">
           {/* Assigned Cluster Card */}
-          <div
-            className="rounded-2xl p-4 border transition-all duration-300"
-            style={{
-              backgroundColor: assignedCluster.accentBg,
-              borderColor: assignedCluster.borderColor
-            }}
-          >
+          <div className="bg-white border-2 border-purple-300 rounded-2xl p-3.5 shadow-sm">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <span
-                  className="w-3 h-3 rounded-full"
+                  className="w-2.5 h-2.5 rounded-full"
                   style={{ backgroundColor: assignedCluster.color }}
                 />
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                  Tipología K-Prototypes Asignada
+                <span className="text-[10px] font-black uppercase text-purple-900">
+                  Tipología K-Prototypes
                 </span>
               </div>
               <span
-                className="px-2.5 py-0.5 rounded-full text-[11px] font-bold text-white shadow-sm"
+                className="px-2.5 py-0.5 rounded-full text-[10px] font-black text-white"
                 style={{ backgroundColor: assignedCluster.color }}
               >
                 Clúster {assignedCluster.id}: {assignedCluster.name}
               </span>
             </div>
 
-            <p className="text-xs text-slate-200 mt-2">
+            <p className="text-xs text-slate-700 mt-1.5 font-medium leading-relaxed">
               {assignedCluster.description}
             </p>
 
-            <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-white/10 text-center">
-              <div className="bg-slate-900/40 rounded-lg p-2">
-                <div className="text-[10px] text-slate-400">Peso en PEA</div>
-                <div className="text-sm font-bold text-white font-mono">{assignedCluster.share}%</div>
+            <div className="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-purple-100 text-center">
+              <div className="bg-purple-50 rounded-lg p-1.5">
+                <div className="text-[9px] text-slate-500 font-semibold">Peso PEA</div>
+                <div className="text-sm font-black text-purple-900 font-mono">{assignedCluster.share}%</div>
               </div>
-              <div className="bg-slate-900/40 rounded-lg p-2">
-                <div className="text-[10px] text-slate-400">Tasa Ocupación</div>
-                <div className="text-sm font-bold text-white font-mono">{assignedCluster.metrics.ocupacion}%</div>
+              <div className="bg-purple-50 rounded-lg p-1.5">
+                <div className="text-[9px] text-slate-500 font-semibold">Tasa Ocupación</div>
+                <div className="text-sm font-black text-purple-900 font-mono">{assignedCluster.metrics.ocupacion}%</div>
               </div>
-              <div className="bg-slate-900/40 rounded-lg p-2">
-                <div className="text-[10px] text-slate-400">Penalización Mujer</div>
-                <div className={`text-sm font-bold font-mono ${assignedCluster.id === 2 ? 'text-rose-400' : 'text-slate-200'}`}>
+              <div className="bg-purple-50 rounded-lg p-1.5">
+                <div className="text-[9px] text-slate-500 font-semibold">Penalización Mujer</div>
+                <div className={`text-sm font-black font-mono ${assignedCluster.id === 2 ? 'text-rose-700' : 'text-purple-900'}`}>
                   OR = {assignedCluster.oddsRatios[0].or.toFixed(2)}
                 </div>
               </div>
@@ -432,16 +371,16 @@ export default function InteractiveLab() {
           </div>
 
           {/* TreeSHAP Local Waterfall */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-lg">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-pink-400" />
-                <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+          <div className="bg-white border border-purple-200 rounded-2xl p-3 shadow-sm">
+            <div className="flex items-center justify-between mb-1 px-1">
+              <div className="flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-purple-700" />
+                <h4 className="text-[10px] font-black text-slate-900 uppercase">
                   Descomposición Local TreeSHAP (&phi;_i)
                 </h4>
               </div>
-              <span className="text-[11px] font-mono text-slate-400">
-                P(Ocupación) = {(predictedProb * 100).toFixed(1)}%
+              <span className="text-[10px] font-mono font-black text-purple-800">
+                P(Ocupado) = {(predictedProb * 100).toFixed(1)}%
               </span>
             </div>
 
@@ -449,10 +388,10 @@ export default function InteractiveLab() {
           </div>
 
           {/* Causal Note */}
-          <div className="bg-indigo-950/40 border border-indigo-500/30 rounded-xl p-3 text-xs text-slate-300 flex items-start gap-2.5">
-            <Info className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
+          <div className="bg-purple-50 border border-purple-200 rounded-xl p-2.5 text-[11px] text-slate-700 flex items-start gap-2">
+            <Info className="w-4 h-4 text-purple-700 flex-shrink-0 mt-0.5" />
             <div>
-              <strong className="text-indigo-200">Lectura Causal Interseccional (DML):</strong> Si esta persona es mujer en transición formativa (15-20 años) con dependientes infantiles, la penalización no es simplemente la suma de variables, sino un efecto multiplicador de exclusión laboral que exige políticas de cuidado directo para no truncar su educación.
+              <strong className="text-purple-950">Inferencia Causal (DML):</strong> La penalización observada en jóvenes mujeres con carga de cuidado no es aditiva aislada, sino un multiplicador estructural que requiere universalización de salas cuna para evitar deserción laboral.
             </div>
           </div>
         </div>

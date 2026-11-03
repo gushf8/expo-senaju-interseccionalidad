@@ -22,3 +22,4 @@ export default function MathView({ math, display = false, className = '' }) {
     />
   );
 }
+

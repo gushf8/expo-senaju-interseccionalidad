@@ -5,8 +5,8 @@
   "start_url": "/",
   "id": "/",
   "display": "standalone",
-  "background_color": "#090d16",
-  "theme_color": "#4f46e5",
+  "background_color": "#ffffff",
+  "theme_color": "#7c3aed",
   "orientation": "any",
   "categories": ["education", "productivity", "utilities"],
   "icons": [

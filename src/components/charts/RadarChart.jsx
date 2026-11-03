@@ -3,20 +3,20 @@ import { CLUSTERS } from '../../data/paperData';
 
 const AXES = [
   { key: 'mujeres', label: '% Mujeres', max: 60, unit: '%' },
-  { key: 'escolaridad', label: 'Escolaridad (años)', max: 12, unit: ' años' },
+  { key: 'escolaridad', label: 'Escolaridad', max: 12, unit: ' a' },
   { key: 'ruralidad', label: 'Ruralidad', max: 70, unit: '%' },
-  { key: 'etniaOriginaria', label: 'Etnia Originaria', max: 50, unit: '%' },
+  { key: 'etniaOriginaria', label: 'Etnia Indígena', max: 50, unit: '%' },
   { key: 'lenguaNativa', label: 'Lengua Nativa', max: 30, unit: '%' },
-  { key: 'pobreza', label: 'Pobreza Monetaria', max: 60, unit: '%' },
-  { key: 'ocupacion', label: 'Tasa Ocupación', max: 100, unit: '%' }
+  { key: 'pobreza', label: 'Pobreza', max: 60, unit: '%' },
+  { key: 'ocupacion', label: 'Ocupación', max: 100, unit: '%' }
 ];
 
 export default function RadarChart({ activeClusterId = null, onSelectCluster }) {
   const [selectedCluster, setSelectedCluster] = useState(activeClusterId || null);
 
-  const size = 420;
+  const size = 360;
   const center = size / 2;
-  const radius = size * 0.38;
+  const radius = size * 0.36;
   const totalAxes = AXES.length;
 
   const getCoordinates = (index, value, max) => {
@@ -31,10 +31,10 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
   const currentActive = selectedCluster || activeClusterId;
 
   return (
-    <div className="flex flex-col items-center w-full">
-      <div className="relative w-full max-w-[420px] aspect-square flex items-center justify-center">
+    <div className="flex flex-col items-center w-full max-w-[380px] mx-auto">
+      <div className="relative w-full aspect-square flex items-center justify-center bg-white/80 rounded-2xl p-1 border border-purple-100 shadow-sm">
         <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-full overflow-visible">
-          {/* Background Concentric Webs */}
+          {/* Concentric Web Lines */}
           {[0.25, 0.5, 0.75, 1].map((level, idx) => (
             <polygon
               key={idx}
@@ -42,8 +42,8 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
                 const { x, y } = getCoordinates(i, axis.max * level, axis.max);
                 return `${x},${y}`;
               }).join(' ')}
-              fill="none"
-              stroke="rgba(255, 255, 255, 0.07)"
+              fill={level === 1 ? '#faf5ff' : 'none'}
+              stroke="#d8b4fe"
               strokeWidth="1"
               strokeDasharray={level === 1 ? 'none' : '3 3'}
             />
@@ -53,7 +53,7 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
           {AXES.map((axis, i) => {
             const { x, y } = getCoordinates(i, axis.max, axis.max);
             const angle = (Math.PI * 2 / totalAxes) * i - Math.PI / 2;
-            const labelDist = radius + 24;
+            const labelDist = radius + 20;
             const lx = center + labelDist * Math.cos(angle);
             const ly = center + labelDist * Math.sin(angle);
 
@@ -64,15 +64,15 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
                   y1={center}
                   x2={x}
                   y2={y}
-                  stroke="rgba(255, 255, 255, 0.12)"
-                  strokeWidth="1"
+                  stroke="#e9d5ff"
+                  strokeWidth="1.2"
                 />
                 <text
                   x={lx}
                   y={ly}
                   textAnchor="middle"
                   dominantBaseline="central"
-                  className="text-[10px] sm:text-[11px] font-semibold fill-slate-300"
+                  className="text-[9px] sm:text-[10px] font-bold fill-slate-800"
                 >
                   {axis.label}
                 </text>
@@ -83,8 +83,8 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
           {/* Cluster Polygons */}
           {CLUSTERS.map((c) => {
             const isTarget = currentActive ? currentActive === c.id : true;
-            const opacity = isTarget ? 0.35 : 0.06;
-            const strokeOpacity = isTarget ? 1 : 0.2;
+            const opacity = isTarget ? 0.35 : 0.08;
+            const strokeOpacity = isTarget ? 1 : 0.3;
             const strokeWidth = isTarget ? 2.5 : 1;
 
             const points = AXES.map((axis, i) => {
@@ -109,7 +109,6 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
                     if (onSelectCluster) onSelectCluster(next);
                   }}
                 />
-                {/* Vertex points */}
                 {isTarget && AXES.map((axis, i) => {
                   const val = c.metrics[axis.key];
                   const { x, y } = getCoordinates(i, val, axis.max);
@@ -118,7 +117,7 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
                       key={i}
                       cx={x}
                       cy={y}
-                      r="4"
+                      r="3.5"
                       fill={c.color}
                       stroke="#ffffff"
                       strokeWidth="1.5"
@@ -131,8 +130,8 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
         </svg>
       </div>
 
-      {/* Cluster Switcher Pills */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 w-full">
+      {/* Minimalist Cluster Pills for Mobile */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-2 w-full">
         {CLUSTERS.map((c) => {
           const active = currentActive === c.id;
           return (
@@ -143,18 +142,22 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
                 setSelectedCluster(next);
                 if (onSelectCluster) onSelectCluster(next);
               }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all text-left border ${
+              className={`px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold flex items-center justify-between transition-all border ${
                 active
-                  ? 'border-indigo-400 bg-indigo-950/60 text-white shadow-lg shadow-indigo-950/50'
-                  : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                  ? 'border-purple-600 bg-purple-600 text-white shadow-sm'
+                  : 'border-purple-200 bg-white text-slate-700 hover:border-purple-300'
               }`}
             >
-              <span
-                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                style={{ backgroundColor: c.color }}
-              />
-              <span className="truncate">C{c.id}: {c.name.split(' ')[0]}</span>
-              <span className="ml-auto text-[10px] font-mono text-slate-400">{c.share}%</span>
+              <div className="flex items-center gap-1.5 truncate">
+                <span
+                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: active ? '#ffffff' : c.color }}
+                />
+                <span className="truncate">C{c.id}: {c.name.split(' ')[0]}</span>
+              </div>
+              <span className={`font-mono text-[9px] ${active ? 'text-purple-100' : 'text-slate-500'}`}>
+                {c.share}%
+              </span>
             </button>
           );
         })}

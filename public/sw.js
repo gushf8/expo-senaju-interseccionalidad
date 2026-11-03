@@ -108,3 +108,4 @@ self.addEventListener('message', (event) => {
     });
   }
 });
+

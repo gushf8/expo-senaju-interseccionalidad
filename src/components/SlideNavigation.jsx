@@ -13,18 +13,16 @@ export default function SlideNavigation({
   const [timerActive, setTimerActive] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
 
-  // Auto-play presentation timer
   useEffect(() => {
     let interval = null;
     if (isPlaying) {
       interval = setInterval(() => {
         onSlideChange((prev) => (prev < SLIDES_DATA.length - 1 ? prev + 1 : 0));
-      }, 8000);
+      }, 7000);
     }
     return () => clearInterval(interval);
   }, [isPlaying, onSlideChange]);
 
-  // Defense stop-watch timer
   useEffect(() => {
     let interval = null;
     if (timerActive) {
@@ -44,28 +42,27 @@ export default function SlideNavigation({
   const progressPercent = ((currentSlide + 1) / SLIDES_DATA.length) * 100;
 
   return (
-    <div className="w-full flex flex-col items-center gap-2 max-w-4xl">
-      {/* Progress Bar */}
-      <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden border border-slate-800">
+    <div className="w-full flex flex-col items-center gap-1.5 max-w-3xl px-2">
+      {/* Sleek Purple Progress Bar */}
+      <div className="w-full bg-purple-100 h-1.5 rounded-full overflow-hidden border border-purple-200">
         <div
-          className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full transition-all duration-300"
+          className="bg-gradient-to-r from-purple-700 via-purple-600 to-pink-500 h-full transition-all duration-300"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
 
-      {/* Control Bar */}
-      <div className="w-full bg-slate-900/90 border border-slate-800/90 rounded-2xl px-4 py-2.5 flex items-center justify-between shadow-xl backdrop-blur-md">
-        {/* Left: Defense Stopwatch */}
-        <div className="flex items-center gap-2">
-          <div className="font-mono text-xs sm:text-sm font-bold text-slate-200 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
+      {/* Control Dock: White & Purple */}
+      <div className="w-full bg-white/95 border border-purple-200/90 rounded-2xl px-3 py-1.5 flex items-center justify-between shadow-md backdrop-blur-md">
+        {/* Left: Stopwatch */}
+        <div className="flex items-center gap-1.5">
+          <div className="font-mono text-xs font-bold text-purple-950 bg-purple-50 px-2 py-0.5 rounded-lg border border-purple-200">
             {formatTimer(timerSeconds)}
           </div>
           <button
             onClick={() => setTimerActive(!timerActive)}
-            className="text-xs px-2 py-1 rounded bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors"
-            title={timerActive ? 'Pausar cronómetro' : 'Iniciar cronómetro de defensa'}
+            className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-purple-100 text-purple-900 hover:bg-purple-200 transition-colors"
           >
-            {timerActive ? 'Pausar' : 'Defensa'}
+            {timerActive ? 'Pausar' : 'Tiempo'}
           </button>
           {timerSeconds > 0 && (
             <button
@@ -73,75 +70,77 @@ export default function SlideNavigation({
                 setTimerActive(false);
                 setTimerSeconds(0);
               }}
-              className="text-slate-400 hover:text-slate-200"
-              title="Reiniciar cronómetro"
+              className="text-slate-400 hover:text-purple-800 p-0.5"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
+              <RotateCcw className="w-3 h-3" />
             </button>
           )}
         </div>
 
-        {/* Center: Slide Arrows & Jump Grid */}
-        <div className="flex items-center gap-2">
+        {/* Center: Slide Arrows & Number */}
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => onSlideChange(Math.max(0, currentSlide - 1))}
             disabled={currentSlide === 0}
-            className="p-2 rounded-xl bg-slate-800 text-slate-200 hover:bg-indigo-600 disabled:opacity-30 disabled:hover:bg-slate-800 transition-all"
-            title="Diapositiva anterior (Flecha Izquierda)"
+            className="p-1.5 rounded-xl bg-purple-50 text-purple-900 hover:bg-purple-600 hover:text-white disabled:opacity-30 transition-all border border-purple-200"
+            title="Anterior (Flecha Izq)"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
 
-          <span className="text-xs font-mono font-bold text-slate-200 px-3 py-1 bg-slate-950 rounded-lg border border-slate-800">
+          <span className="text-xs font-mono font-bold text-purple-950 px-2.5 py-0.5 bg-purple-50 rounded-lg border border-purple-200">
             {currentSlide + 1} / {SLIDES_DATA.length}
           </span>
 
           <button
             onClick={() => onSlideChange(Math.min(SLIDES_DATA.length - 1, currentSlide + 1))}
             disabled={currentSlide === SLIDES_DATA.length - 1}
-            className="p-2 rounded-xl bg-slate-800 text-slate-200 hover:bg-indigo-600 disabled:opacity-30 disabled:hover:bg-slate-800 transition-all"
-            title="Siguiente diapositiva (Flecha Derecha / Espacio)"
+            className="p-1.5 rounded-xl bg-purple-50 text-purple-900 hover:bg-purple-600 hover:text-white disabled:opacity-30 transition-all border border-purple-200"
+            title="Siguiente (Flecha Der)"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4" />
           </button>
 
-          {/* Grid View Modal Toggle */}
           <button
             onClick={() => setShowGrid(!showGrid)}
-            className={`p-2 rounded-xl transition-all ${
-              showGrid ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+            className={`p-1.5 rounded-xl transition-all border ${
+              showGrid
+                ? 'bg-purple-700 text-white border-purple-700'
+                : 'bg-purple-50 text-purple-900 border-purple-200 hover:bg-purple-100'
             }`}
-            title="Ver cuadrícula de diapositivas"
+            title="Ver todas las diapositivas"
           >
-            <LayoutGrid className="w-4 h-4" />
+            <LayoutGrid className="w-3.5 h-3.5" />
           </button>
         </div>
 
         {/* Right: Autoplay & Fullscreen */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className={`p-2 rounded-xl transition-all ${
-              isPlaying ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+            className={`p-1.5 rounded-xl transition-all border ${
+              isPlaying
+                ? 'bg-purple-700 text-white border-purple-700'
+                : 'bg-purple-50 text-purple-900 border-purple-200 hover:bg-purple-100'
             }`}
-            title={isPlaying ? 'Pausar reproducción automática' : 'Reproducir presentación automática'}
+            title={isPlaying ? 'Pausar auto' : 'Reproducir'}
           >
-            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
           </button>
 
           <button
             onClick={onToggleFullscreen}
-            className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-indigo-600 hover:text-white transition-all"
-            title={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa (F)'}
+            className="p-1.5 rounded-xl bg-purple-50 text-purple-900 hover:bg-purple-700 hover:text-white transition-all border border-purple-200"
+            title="Pantalla completa (F)"
           >
-            {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
           </button>
         </div>
       </div>
 
-      {/* Grid Overview Modal */}
+      {/* Grid Thumbnail Modal */}
       {showGrid && (
-        <div className="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-2xl mt-2 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+        <div className="w-full bg-white border border-purple-200 rounded-2xl p-3 shadow-xl mt-1 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-1.5 max-h-56 overflow-y-auto">
           {SLIDES_DATA.map((s, idx) => (
             <button
               key={s.id}
@@ -149,14 +148,14 @@ export default function SlideNavigation({
                 onSlideChange(idx);
                 setShowGrid(false);
               }}
-              className={`p-2 rounded-xl text-left border transition-all flex flex-col justify-between h-20 ${
+              className={`p-1.5 rounded-xl text-left border transition-all flex flex-col justify-between h-16 ${
                 currentSlide === idx
-                  ? 'border-indigo-500 bg-indigo-950/60 text-white shadow-md'
-                  : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                  ? 'border-purple-600 bg-purple-100/70 text-purple-950 font-bold shadow-xs'
+                  : 'border-purple-100 bg-white text-slate-600 hover:border-purple-300'
               }`}
             >
-              <span className="text-[10px] font-mono font-bold text-indigo-400">#{s.id}</span>
-              <span className="text-[11px] font-semibold line-clamp-2 leading-tight">
+              <span className="text-[9px] font-mono font-bold text-purple-700">#{s.id}</span>
+              <span className="text-[10px] line-clamp-2 leading-tight">
                 {s.title}
               </span>
             </button>
