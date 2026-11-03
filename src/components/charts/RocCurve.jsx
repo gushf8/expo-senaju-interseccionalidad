@@ -31,7 +31,7 @@ export default function RocCurve() {
 
   return (
     <div className="w-full flex flex-col items-center max-w-[340px] mx-auto">
-      <div className="relative w-full aspect-square flex items-center justify-center bg-white border border-purple-200 rounded-2xl p-2 shadow-sm">
+      <div className="relative w-full aspect-square flex items-center justify-center bg-white border border-slate-200 rounded-2xl p-2 shadow-sm">
         <svg
           viewBox={`0 0 ${size} ${size}`}
           className="w-full h-full overflow-visible"
@@ -44,8 +44,8 @@ export default function RocCurve() {
           }}
           onMouseLeave={() => setHoverX(null)}
         >
-          {/* Shaded Area for XGBoost Gain */}
-          <path d={xgbArea} fill="rgba(124, 58, 237, 0.08)" />
+          {/* Shaded Area for Gain in subtle emerald */}
+          <path d={xgbArea} fill="rgba(5, 150, 105, 0.07)" />
 
           {/* Grid lines */}
           {[0, 0.2, 0.4, 0.6, 0.8, 1.0].map((t) => {
@@ -64,14 +64,13 @@ export default function RocCurve() {
             );
           })}
 
-          {/* Diagonal Chance Line */}
           <path d={diagonalPath} stroke="#cbd5e1" strokeWidth="1.2" strokeDasharray="3 3" />
 
-          {/* Logit ROC Curve */}
-          <path d={logitPath} fill="none" stroke="#6366f1" strokeWidth="2" />
+          {/* Logit ROC Curve: Cyan */}
+          <path d={logitPath} fill="none" stroke="#0891b2" strokeWidth="2.2" />
 
-          {/* XGBoost ROC Curve */}
-          <path d={xgbPath} fill="none" stroke="#7c3aed" strokeWidth="3" />
+          {/* XGBoost ROC Curve: Morado Azulado / Índigo */}
+          <path d={xgbPath} fill="none" stroke="#4338ca" strokeWidth="3" />
 
           {/* Axes labels */}
           <text
@@ -92,13 +91,12 @@ export default function RocCurve() {
             Sensibilidad (TPR)
           </text>
 
-          {/* Hover */}
           {hoverX !== null && (() => {
             const fpr = (hoverX - pad) / plotSize;
             const tprXgb = Math.pow(fpr, 0.28) * 0.98 + fpr * 0.02;
             const pyXgb = pad + (1 - tprXgb) * plotSize;
             return (
-              <circle cx={hoverX} cy={pyXgb} r="4" fill="#7c3aed" stroke="#fff" strokeWidth="1.5" />
+              <circle cx={hoverX} cy={pyXgb} r="4" fill="#4338ca" stroke="#fff" strokeWidth="1.5" />
             );
           })()}
         </svg>
@@ -106,19 +104,19 @@ export default function RocCurve() {
 
       {/* Badges */}
       <div className="grid grid-cols-2 gap-2 mt-2 w-full">
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-1.5 flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-purple-600 flex-shrink-0" />
+        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-1.5 flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-indigo-700 flex-shrink-0" />
           <div className="truncate">
-            <div className="text-[10px] font-bold text-purple-950">XGBoost / RF</div>
-            <div className="text-[9px] text-purple-700 font-mono font-semibold">AUC = 0.785 (+19%)</div>
+            <div className="text-[10px] font-bold text-indigo-950">XGBoost / RF</div>
+            <div className="text-[9px] text-indigo-700 font-mono font-semibold">AUC = 0.785 (+19%)</div>
           </div>
         </div>
 
-        <div className="bg-slate-50 border border-slate-200 rounded-lg p-1.5 flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 flex-shrink-0" />
+        <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-1.5 flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-cyan-600 flex-shrink-0" />
           <div className="truncate">
-            <div className="text-[10px] font-bold text-slate-800">Logit Clásico</div>
-            <div className="text-[9px] text-slate-600 font-mono">AUC = 0.658 (Base)</div>
+            <div className="text-[10px] font-bold text-cyan-950">Logit Clásico</div>
+            <div className="text-[9px] text-cyan-700 font-mono">AUC = 0.658 (Base)</div>
           </div>
         </div>
       </div>

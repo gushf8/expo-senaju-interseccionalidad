@@ -32,7 +32,7 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
 
   return (
     <div className="flex flex-col items-center w-full max-w-[380px] mx-auto">
-      <div className="relative w-full aspect-square flex items-center justify-center bg-white/80 rounded-2xl p-1 border border-purple-100 shadow-sm">
+      <div className="relative w-full aspect-square flex items-center justify-center bg-white rounded-2xl p-1 border border-indigo-100 shadow-sm">
         <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-full overflow-visible">
           {/* Concentric Web Lines */}
           {[0.25, 0.5, 0.75, 1].map((level, idx) => (
@@ -42,8 +42,8 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
                 const { x, y } = getCoordinates(i, axis.max * level, axis.max);
                 return `${x},${y}`;
               }).join(' ')}
-              fill={level === 1 ? '#faf5ff' : 'none'}
-              stroke="#d8b4fe"
+              fill={level === 1 ? '#f8fafc' : 'none'}
+              stroke="#cbd5e1"
               strokeWidth="1"
               strokeDasharray={level === 1 ? 'none' : '3 3'}
             />
@@ -64,7 +64,7 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
                   y1={center}
                   x2={x}
                   y2={y}
-                  stroke="#e9d5ff"
+                  stroke="#e2e8f0"
                   strokeWidth="1.2"
                 />
                 <text
@@ -130,7 +130,7 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
         </svg>
       </div>
 
-      {/* Minimalist Cluster Pills for Mobile */}
+      {/* Cluster Pills */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-2 w-full">
         {CLUSTERS.map((c) => {
           const active = currentActive === c.id;
@@ -144,8 +144,8 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
               }}
               className={`px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold flex items-center justify-between transition-all border ${
                 active
-                  ? 'border-purple-600 bg-purple-600 text-white shadow-sm'
-                  : 'border-purple-200 bg-white text-slate-700 hover:border-purple-300'
+                  ? 'border-indigo-700 bg-indigo-700 text-white shadow-sm'
+                  : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
               }`}
             >
               <div className="flex items-center gap-1.5 truncate">
@@ -155,7 +155,7 @@ export default function RadarChart({ activeClusterId = null, onSelectCluster }) 
                 />
                 <span className="truncate">C{c.id}: {c.name.split(' ')[0]}</span>
               </div>
-              <span className={`font-mono text-[9px] ${active ? 'text-purple-100' : 'text-slate-500'}`}>
+              <span className={`font-mono text-[9px] ${active ? 'text-indigo-100' : 'text-slate-500'}`}>
                 {c.share}%
               </span>
             </button>

@@ -38,11 +38,11 @@ export default function ForestPlot() {
       {/* Minimal Top Bar */}
       <div className="flex items-center justify-between w-full gap-2 mb-2 px-1 text-[11px]">
         <div className="flex items-center gap-1.5 text-slate-700">
-          <span className="font-bold text-purple-700">Grupo:</span>
+          <span className="font-bold text-indigo-700">Grupo:</span>
           <select
             value={activeFilter}
             onChange={(e) => setActiveFilter(e.target.value)}
-            className="bg-purple-50 border border-purple-200 rounded-lg px-2 py-0.5 text-[11px] font-semibold text-purple-900 focus:outline-none"
+            className="bg-indigo-50 border border-indigo-200 rounded-lg px-2 py-0.5 text-[11px] font-semibold text-indigo-900 focus:outline-none"
           >
             <option value="all">Todos los Clústeres</option>
             {CLUSTERS.map((c) => (
@@ -55,7 +55,7 @@ export default function ForestPlot() {
 
         <div className="flex items-center gap-3 text-[10px] text-slate-600 font-semibold">
           <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-rose-600 inline-block" />
+            <span className="w-2 h-2 rounded-full bg-cyan-600 inline-block" />
             Penalización (&lt;1)
           </span>
           <span className="flex items-center gap-1">
@@ -65,7 +65,7 @@ export default function ForestPlot() {
         </div>
       </div>
 
-      <div className="w-full overflow-x-auto bg-white border border-purple-200 rounded-xl p-2.5 shadow-sm">
+      <div className="w-full overflow-x-auto bg-white border border-slate-200 rounded-xl p-2.5 shadow-sm">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[500px]">
           {/* Header Axis */}
           <line x1={plotLeft} y1={22} x2={plotRight} y2={22} stroke="#cbd5e1" strokeWidth="1" />
@@ -78,7 +78,7 @@ export default function ForestPlot() {
                   x={tx}
                   y={14}
                   textAnchor="middle"
-                  className={`text-[9px] font-mono ${tick === 1.0 ? 'fill-purple-700 font-black' : 'fill-slate-500'}`}
+                  className={`text-[9px] font-mono ${tick === 1.0 ? 'fill-indigo-700 font-black' : 'fill-slate-500'}`}
                 >
                   {tick.toFixed(2)}
                 </text>
@@ -92,7 +92,7 @@ export default function ForestPlot() {
             y1={22}
             x2={xNull}
             y2={height - 18}
-            stroke="#7c3aed"
+            stroke="#4338ca"
             strokeWidth="1.5"
             strokeDasharray="3 3"
           />
@@ -100,7 +100,7 @@ export default function ForestPlot() {
             x={xNull}
             y={height - 6}
             textAnchor="middle"
-            className="text-[8px] font-mono fill-purple-700 font-bold"
+            className="text-[8px] font-mono fill-indigo-700 font-bold"
           >
             Base (OR=1.0)
           </text>
@@ -113,30 +113,27 @@ export default function ForestPlot() {
             const xHigh = getX(item.ciHigh);
             const isDisadvantage = item.or < 1.0;
             const pointColor = item.critical
-              ? (isDisadvantage ? '#e11d48' : '#059669')
+              ? (isDisadvantage ? '#0891b2' : '#059669')
               : (item.sig ? item.clusterColor : '#64748b');
 
             return (
               <g key={`${item.clusterId}-${item.factor}-${idx}`}>
-                {/* Row Hover */}
                 <rect
                   x={0}
                   y={y - 12}
                   width={width}
                   height={rowHeight - 3}
-                  fill={idx % 2 === 0 ? '#faf5ff' : '#ffffff'}
+                  fill={idx % 2 === 0 ? '#f8fafc' : '#ffffff'}
                   className="rounded"
                 />
 
-                {/* Factor Label */}
                 <text x={8} y={y - 1} className="text-[10px] font-bold fill-slate-800">
                   {item.factor}
                 </text>
-                <text x={8} y={y + 10} className="text-[8px] font-mono fill-purple-700">
+                <text x={8} y={y + 10} className="text-[8px] font-mono fill-indigo-700">
                   C{item.clusterId} • {item.clusterName.split(' ')[0]}
                 </text>
 
-                {/* Whisker Line */}
                 <line
                   x1={xLow}
                   y1={y}
@@ -149,7 +146,6 @@ export default function ForestPlot() {
                 <line x1={xLow} y1={y - 3} x2={xLow} y2={y + 3} stroke={pointColor} strokeWidth="1.5" />
                 <line x1={xHigh} y1={y - 3} x2={xHigh} y2={y + 3} stroke={pointColor} strokeWidth="1.5" />
 
-                {/* Point */}
                 <circle
                   cx={xVal}
                   cy={y}
@@ -159,7 +155,6 @@ export default function ForestPlot() {
                   strokeWidth="1.2"
                 />
 
-                {/* Value Text */}
                 <text
                   x={width - 5}
                   y={y + 3}

@@ -6,7 +6,7 @@
   "id": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#7c3aed",
+  "theme_color": "#4338ca",
   "orientation": "any",
   "categories": ["education", "productivity", "utilities"],
   "icons": [

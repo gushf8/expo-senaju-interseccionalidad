@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { CLUSTERS, SIMULATION_BASE_STATS } from '../data/paperData';
 import ShapWaterfall from './charts/ShapWaterfall';
-import { Sparkles, Sliders, User, Info, CheckCircle2, ChevronRight, Compass } from 'lucide-react';
+import { Sparkles, Sliders, Info } from 'lucide-react';
 
 export default function InteractiveLab() {
   const [sexo, setSexo] = useState('mujer');
@@ -13,7 +13,6 @@ export default function InteractiveLab() {
   const [ninosMenores5, setNinosMenores5] = useState(1);
   const [adultosMayores, setAdultosMayores] = useState(0);
 
-  // K-Prototypes clustering simulation
   const assignedCluster = useMemo(() => {
     if (ambito === 'rural' || (etnia === 'originaria' && escolaridad <= 7)) {
       return CLUSTERS[3];
@@ -27,7 +26,6 @@ export default function InteractiveLab() {
     return CLUSTERS[0];
   }, [sexo, edad, escolaridad, ambito, etnia, lengua, ninosMenores5]);
 
-  // SHAP Waterfall calculations
   const shapBreakdown = useMemo(() => {
     const list = [];
 
@@ -98,12 +96,12 @@ export default function InteractiveLab() {
 
   return (
     <div className="w-full flex flex-col gap-4 max-w-6xl mx-auto">
-      {/* Top Banner - White & Purple */}
-      <div className="bg-gradient-to-r from-purple-50 via-white to-pink-50 border border-purple-200 rounded-2xl p-4 sm:p-5 shadow-xs">
+      {/* Top Banner - Morado Azulado + Cyan + Esmeralda */}
+      <div className="bg-gradient-to-r from-indigo-50 via-cyan-50/50 to-emerald-50 border border-indigo-200 rounded-2xl p-4 sm:p-5 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-purple-100 text-purple-900 border border-purple-200">
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-indigo-100 text-indigo-900 border border-indigo-200">
                 Laboratorio Interactivo
               </span>
               <span className="text-[10px] text-slate-500 font-mono font-bold">ENAHO 2025 • N=13,361</span>
@@ -116,7 +114,7 @@ export default function InteractiveLab() {
             </p>
           </div>
 
-          {/* Quick Presets for Mobile */}
+          {/* Quick Presets */}
           <div className="flex flex-wrap gap-1.5">
             <button
               onClick={() => {
@@ -128,7 +126,7 @@ export default function InteractiveLab() {
                 setLengua('castellano');
                 setNinosMenores5(0);
               }}
-              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-pink-50 border border-pink-200 text-pink-800 hover:bg-pink-100"
+              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-cyan-50 border border-cyan-200 text-cyan-800 hover:bg-cyan-100"
             >
               C2: Joven 18a (Brecha Máxima)
             </button>
@@ -142,7 +140,7 @@ export default function InteractiveLab() {
                 setLengua('nativa');
                 setNinosMenores5(2);
               }}
-              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 border border-amber-200 text-amber-900 hover:bg-amber-100"
+              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-50 border border-indigo-200 text-indigo-900 hover:bg-indigo-100"
             >
               C3: Madre Periurbana (Cuidado)
             </button>
@@ -167,9 +165,9 @@ export default function InteractiveLab() {
       {/* Grid: Controls vs Output */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Controls Column (5 cols) */}
-        <div className="lg:col-span-5 bg-white border border-purple-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-          <div className="flex items-center gap-1.5 border-b border-purple-100 pb-2">
-            <Sliders className="w-4 h-4 text-purple-700" />
+        <div className="lg:col-span-5 bg-white border border-indigo-200 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+          <div className="flex items-center gap-1.5 border-b border-indigo-100 pb-2">
+            <Sliders className="w-4 h-4 text-indigo-700" />
             <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
               Variables del Informante
             </h3>
@@ -186,8 +184,8 @@ export default function InteractiveLab() {
                 onClick={() => setSexo('mujer')}
                 className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all border ${
                   sexo === 'mujer'
-                    ? 'bg-purple-700 text-white border-purple-800 shadow-sm'
-                    : 'bg-purple-50 text-slate-700 border-purple-200 hover:bg-purple-100'
+                    ? 'bg-indigo-700 text-white border-indigo-800 shadow-sm'
+                    : 'bg-indigo-50 text-slate-700 border-indigo-200 hover:bg-indigo-100'
                 }`}
               >
                 Mujer (Femenino)
@@ -197,8 +195,8 @@ export default function InteractiveLab() {
                 onClick={() => setSexo('hombre')}
                 className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all border ${
                   sexo === 'hombre'
-                    ? 'bg-purple-700 text-white border-purple-800 shadow-sm'
-                    : 'bg-purple-50 text-slate-700 border-purple-200 hover:bg-purple-100'
+                    ? 'bg-cyan-700 text-white border-cyan-800 shadow-sm'
+                    : 'bg-cyan-50 text-slate-700 border-cyan-200 hover:bg-cyan-100'
                 }`}
               >
                 Varón (Masculino)
@@ -210,7 +208,7 @@ export default function InteractiveLab() {
           <div>
             <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-0.5">
               <span>2. Edad Cumplida</span>
-              <span className="font-mono text-purple-800 font-black">{edad} años</span>
+              <span className="font-mono text-indigo-700 font-black">{edad} años</span>
             </div>
             <input
               type="range"
@@ -218,7 +216,7 @@ export default function InteractiveLab() {
               max="29"
               value={edad}
               onChange={(e) => setEdad(Number(e.target.value))}
-              className="w-full accent-purple-700 cursor-pointer h-1.5"
+              className="w-full accent-indigo-700 cursor-pointer h-1.5"
             />
           </div>
 
@@ -226,7 +224,7 @@ export default function InteractiveLab() {
           <div>
             <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-0.5">
               <span>3. Años de Escolaridad</span>
-              <span className="font-mono text-purple-800 font-black">{escolaridad} años</span>
+              <span className="font-mono text-emerald-700 font-black">{escolaridad} años</span>
             </div>
             <input
               type="range"
@@ -234,7 +232,7 @@ export default function InteractiveLab() {
               max="18"
               value={escolaridad}
               onChange={(e) => setEscolaridad(Number(e.target.value))}
-              className="w-full accent-purple-700 cursor-pointer h-1.5"
+              className="w-full accent-emerald-600 cursor-pointer h-1.5"
             />
           </div>
 
@@ -249,8 +247,8 @@ export default function InteractiveLab() {
                 onClick={() => setAmbito('urbano')}
                 className={`py-1.5 px-2 rounded-xl text-xs font-bold border ${
                   ambito === 'urbano'
-                    ? 'bg-purple-700 text-white border-purple-800'
-                    : 'bg-purple-50 text-slate-700 border-purple-200'
+                    ? 'bg-indigo-700 text-white border-indigo-800'
+                    : 'bg-indigo-50 text-slate-700 border-indigo-200'
                 }`}
               >
                 Urbano / Capital
@@ -260,8 +258,8 @@ export default function InteractiveLab() {
                 onClick={() => setAmbito('rural')}
                 className={`py-1.5 px-2 rounded-xl text-xs font-bold border ${
                   ambito === 'rural'
-                    ? 'bg-purple-700 text-white border-purple-800'
-                    : 'bg-purple-50 text-slate-700 border-purple-200'
+                    ? 'bg-emerald-700 text-white border-emerald-800'
+                    : 'bg-emerald-50 text-slate-700 border-emerald-200'
                 }`}
               >
                 Rural / Agrario
@@ -278,7 +276,7 @@ export default function InteractiveLab() {
               <select
                 value={etnia}
                 onChange={(e) => setEtnia(e.target.value)}
-                className="w-full bg-purple-50 border border-purple-200 rounded-xl px-2 py-1.5 text-[11px] font-semibold text-slate-900"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-1.5 text-[11px] font-semibold text-slate-900"
               >
                 <option value="originaria">Indígena / Nativa</option>
                 <option value="mestizo">Mestizo / Criollo</option>
@@ -294,7 +292,7 @@ export default function InteractiveLab() {
               <select
                 value={lengua}
                 onChange={(e) => setLengua(e.target.value)}
-                className="w-full bg-purple-50 border border-purple-200 rounded-xl px-2 py-1.5 text-[11px] font-semibold text-slate-900"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-1.5 text-[11px] font-semibold text-slate-900"
               >
                 <option value="nativa">Quechua/Nativa</option>
                 <option value="castellano">Castellano</option>
@@ -315,8 +313,8 @@ export default function InteractiveLab() {
                   onClick={() => setNinosMenores5(num)}
                   className={`flex-1 py-1 rounded-lg text-xs font-bold border ${
                     ninosMenores5 === num
-                      ? 'bg-purple-700 text-white border-purple-800'
-                      : 'bg-purple-50 text-slate-700 border-purple-200'
+                      ? 'bg-indigo-700 text-white border-indigo-800'
+                      : 'bg-slate-50 text-slate-700 border-slate-200'
                   }`}
                 >
                   {num === 3 ? '3+' : num}
@@ -329,14 +327,14 @@ export default function InteractiveLab() {
         {/* Live Output Column (7 cols) */}
         <div className="lg:col-span-7 flex flex-col gap-3">
           {/* Assigned Cluster Card */}
-          <div className="bg-white border-2 border-purple-300 rounded-2xl p-3.5 shadow-sm">
+          <div className="bg-white border-2 border-indigo-200 rounded-2xl p-3.5 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <span
                   className="w-2.5 h-2.5 rounded-full"
                   style={{ backgroundColor: assignedCluster.color }}
                 />
-                <span className="text-[10px] font-black uppercase text-purple-900">
+                <span className="text-[10px] font-black uppercase text-indigo-900">
                   Tipología K-Prototypes
                 </span>
               </div>
@@ -352,18 +350,18 @@ export default function InteractiveLab() {
               {assignedCluster.description}
             </p>
 
-            <div className="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-purple-100 text-center">
-              <div className="bg-purple-50 rounded-lg p-1.5">
+            <div className="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-100 text-center">
+              <div className="bg-indigo-50/60 rounded-lg p-1.5">
                 <div className="text-[9px] text-slate-500 font-semibold">Peso PEA</div>
-                <div className="text-sm font-black text-purple-900 font-mono">{assignedCluster.share}%</div>
+                <div className="text-sm font-black text-indigo-900 font-mono">{assignedCluster.share}%</div>
               </div>
-              <div className="bg-purple-50 rounded-lg p-1.5">
+              <div className="bg-cyan-50/60 rounded-lg p-1.5">
                 <div className="text-[9px] text-slate-500 font-semibold">Tasa Ocupación</div>
-                <div className="text-sm font-black text-purple-900 font-mono">{assignedCluster.metrics.ocupacion}%</div>
+                <div className="text-sm font-black text-cyan-900 font-mono">{assignedCluster.metrics.ocupacion}%</div>
               </div>
-              <div className="bg-purple-50 rounded-lg p-1.5">
+              <div className="bg-emerald-50/60 rounded-lg p-1.5">
                 <div className="text-[9px] text-slate-500 font-semibold">Penalización Mujer</div>
-                <div className={`text-sm font-black font-mono ${assignedCluster.id === 2 ? 'text-rose-700' : 'text-purple-900'}`}>
+                <div className={`text-sm font-black font-mono ${assignedCluster.id === 2 ? 'text-cyan-800' : 'text-slate-800'}`}>
                   OR = {assignedCluster.oddsRatios[0].or.toFixed(2)}
                 </div>
               </div>
@@ -371,15 +369,15 @@ export default function InteractiveLab() {
           </div>
 
           {/* TreeSHAP Local Waterfall */}
-          <div className="bg-white border border-purple-200 rounded-2xl p-3 shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm">
             <div className="flex items-center justify-between mb-1 px-1">
               <div className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-purple-700" />
+                <Sparkles className="w-3.5 h-3.5 text-cyan-700" />
                 <h4 className="text-[10px] font-black text-slate-900 uppercase">
                   Descomposición Local TreeSHAP (&phi;_i)
                 </h4>
               </div>
-              <span className="text-[10px] font-mono font-black text-purple-800">
+              <span className="text-[10px] font-mono font-black text-indigo-800">
                 P(Ocupado) = {(predictedProb * 100).toFixed(1)}%
               </span>
             </div>
@@ -388,10 +386,10 @@ export default function InteractiveLab() {
           </div>
 
           {/* Causal Note */}
-          <div className="bg-purple-50 border border-purple-200 rounded-xl p-2.5 text-[11px] text-slate-700 flex items-start gap-2">
-            <Info className="w-4 h-4 text-purple-700 flex-shrink-0 mt-0.5" />
+          <div className="bg-cyan-50/70 border border-cyan-200 rounded-xl p-2.5 text-[11px] text-slate-700 flex items-start gap-2">
+            <Info className="w-4 h-4 text-cyan-700 flex-shrink-0 mt-0.5" />
             <div>
-              <strong className="text-purple-950">Inferencia Causal (DML):</strong> La penalización observada en jóvenes mujeres con carga de cuidado no es aditiva aislada, sino un multiplicador estructural que requiere universalización de salas cuna para evitar deserción laboral.
+              <strong className="text-cyan-950">Inferencia Causal (DML):</strong> La penalización observada en jóvenes mujeres con carga de cuidado no es aditiva aislada, sino un multiplicador estructural que requiere universalización de salas cuna para evitar deserción laboral.
             </div>
           </div>
         </div>

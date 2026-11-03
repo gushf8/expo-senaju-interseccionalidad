@@ -22,14 +22,14 @@ export default function PaperViewer() {
 
   return (
     <div className="w-full flex flex-col gap-4 max-w-5xl mx-auto">
-      {/* Top Paper Header Card */}
-      <div className="bg-gradient-to-r from-purple-50 via-white to-pink-50 border border-purple-200 rounded-2xl p-4 sm:p-6 shadow-sm flex flex-col sm:flex-row items-start justify-between gap-4">
+      {/* Top Paper Header Card: Indigo + Cyan + Emerald */}
+      <div className="bg-gradient-to-r from-indigo-50/70 via-white to-cyan-50/70 border border-indigo-200 rounded-2xl p-4 sm:p-6 shadow-sm flex flex-col sm:flex-row items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-800 flex-shrink-0 shadow-sm">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700 flex-shrink-0 shadow-sm">
             <FileText className="w-6 h-6" />
           </div>
           <div>
-            <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-purple-100 text-purple-900 border border-purple-200">
+            <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-indigo-100 text-indigo-900 border border-indigo-200">
               Artículo Científico Oficial
             </span>
             <h2 className="text-base sm:text-lg font-black text-slate-900 mt-1 leading-snug">
@@ -49,7 +49,7 @@ export default function PaperViewer() {
           <a
             href={PAPER_METADATA.pdfPath}
             download="Investigacion_SENAJU_2026_Huaman.pdf"
-            className="px-3.5 py-2 rounded-xl text-xs font-black bg-purple-700 hover:bg-purple-800 text-white flex items-center justify-center gap-1.5 shadow-sm transition-all"
+            className="px-3.5 py-2 rounded-xl text-xs font-black bg-indigo-700 hover:bg-indigo-800 text-white flex items-center justify-center gap-1.5 shadow-sm transition-all"
           >
             <Download className="w-3.5 h-3.5" />
             Descargar PDF Oficial
@@ -58,7 +58,7 @@ export default function PaperViewer() {
             href={PAPER_METADATA.pdfPath}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3.5 py-2 rounded-xl text-xs font-black bg-white hover:bg-purple-50 text-purple-900 border border-purple-200 flex items-center justify-center gap-1.5 transition-all"
+            className="px-3.5 py-2 rounded-xl text-xs font-black bg-white hover:bg-cyan-50 text-cyan-900 border border-cyan-200 flex items-center justify-center gap-1.5 transition-all"
           >
             <ExternalLink className="w-3.5 h-3.5" />
             Ver en Pestaña
@@ -69,9 +69,9 @@ export default function PaperViewer() {
       {/* Grid: Metadata */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Metadatos Concurso */}
-        <div className="bg-white border border-purple-200 rounded-2xl p-4 shadow-sm flex flex-col gap-2">
-          <div className="flex items-center gap-1.5 border-b border-purple-100 pb-1.5">
-            <BookOpen className="w-4 h-4 text-purple-700" />
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-2">
+          <div className="flex items-center gap-1.5 border-b border-slate-100 pb-1.5">
+            <BookOpen className="w-4 h-4 text-indigo-700" />
             <h3 className="text-xs font-black text-slate-900 uppercase">
               Metadatos del Concurso SENAJU 2026
             </h3>
@@ -87,49 +87,49 @@ export default function PaperViewer() {
             </div>
             <div>
               <span className="text-slate-500 block text-[10px] font-bold">Muestra Representativa PEA:</span>
-              <span className="font-mono font-bold text-purple-900">{PAPER_METADATA.sampleSize.toLocaleString()} jóvenes de 15 a 29 años</span>
+              <span className="font-mono font-bold text-indigo-800">{PAPER_METADATA.sampleSize.toLocaleString()} jóvenes de 15 a 29 años</span>
             </div>
           </div>
         </div>
 
         {/* ENAHO Módulos */}
-        <div className="bg-white border border-purple-200 rounded-2xl p-4 shadow-sm flex flex-col gap-2">
-          <div className="flex items-center gap-1.5 border-b border-purple-100 pb-1.5">
-            <Database className="w-4 h-4 text-purple-700" />
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col gap-2">
+          <div className="flex items-center gap-1.5 border-b border-slate-100 pb-1.5">
+            <Database className="w-4 h-4 text-cyan-700" />
             <h3 className="text-xs font-black text-slate-900 uppercase">
               Microdatos ENAHO 2025 (INEI)
             </h3>
           </div>
           <ul className="space-y-1.5 text-xs text-slate-700">
-            <li><strong className="text-purple-900 font-mono">M200:</strong> Hogar (edad, sexo, parentesco, dependientes infantiles).</li>
-            <li><strong className="text-purple-900 font-mono">M300:</strong> Educación (lengua materna niñez, escolaridad aprobada).</li>
-            <li><strong className="text-purple-900 font-mono">M500:</strong> Empleo (condición actividad ocu500, autoidentificación étnica).</li>
-            <li><strong className="text-purple-900 font-mono">Sumaria:</strong> Estrato territorial, pobreza monetaria, factor de expansión.</li>
+            <li><strong className="text-indigo-900 font-mono">M200:</strong> Hogar (edad, sexo, parentesco, dependientes infantiles).</li>
+            <li><strong className="text-cyan-900 font-mono">M300:</strong> Educación (lengua materna niñez, escolaridad aprobada).</li>
+            <li><strong className="text-emerald-900 font-mono">M500:</strong> Empleo (condición actividad ocu500, autoidentificación étnica).</li>
+            <li><strong className="text-indigo-900 font-mono">Sumaria:</strong> Estrato territorial, pobreza monetaria, factor de expansión.</li>
           </ul>
         </div>
       </div>
 
       {/* BibTeX Box */}
-      <div className="bg-white border border-purple-200 rounded-2xl p-4 shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-black uppercase text-purple-900">
+          <span className="text-xs font-black uppercase text-indigo-900">
             Cita BibTeX Oficial
           </span>
           <button
             onClick={copyToClipboard}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-50 hover:bg-slate-100 text-indigo-900 border border-slate-200 transition-colors"
           >
             {copiedBib ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
             {copiedBib ? 'Copiado' : 'Copiar'}
           </button>
         </div>
-        <pre className="bg-purple-950 text-purple-100 p-3 rounded-xl font-mono text-[11px] overflow-x-auto leading-relaxed border border-purple-900">
+        <pre className="bg-slate-900 text-indigo-200 p-3 rounded-xl font-mono text-[11px] overflow-x-auto leading-relaxed border border-slate-800">
           <code>{bibtex}</code>
         </pre>
       </div>
 
       {/* Embedded PDF Viewer */}
-      <div className="bg-white border border-purple-200 rounded-2xl p-3 shadow-sm flex flex-col gap-2">
+      <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm flex flex-col gap-2">
         <div className="flex items-center justify-between px-1">
           <h3 className="text-xs font-black uppercase text-slate-900">
             Visor Integrado del PDF
@@ -138,7 +138,7 @@ export default function PaperViewer() {
             15 Páginas • Guardado Offline en Cache
           </span>
         </div>
-        <div className="w-full h-[550px] rounded-xl overflow-hidden border border-purple-100 bg-slate-100">
+        <div className="w-full h-[550px] rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
           <iframe
             src={`${PAPER_METADATA.pdfPath}#toolbar=1`}
             title="PDF Viewer"

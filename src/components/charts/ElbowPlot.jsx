@@ -27,7 +27,7 @@ export default function ElbowPlot() {
 
   return (
     <div className="w-full flex flex-col items-center max-w-[360px] mx-auto">
-      <div className="w-full aspect-[16/10] bg-white border border-purple-200 rounded-2xl p-2 shadow-sm">
+      <div className="w-full aspect-[16/10] bg-white border border-slate-200 rounded-2xl p-2 shadow-sm">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
           {[100000, 140000, 180000].map((c) => {
             const y = getY(c);
@@ -41,7 +41,8 @@ export default function ElbowPlot() {
             );
           })}
 
-          <path d={pathStr} fill="none" stroke="#7c3aed" strokeWidth="2.5" />
+          {/* Curve in Morado Azulado / Índigo */}
+          <path d={pathStr} fill="none" stroke="#4338ca" strokeWidth="2.5" />
 
           {points.map((p) => {
             const x = getX(p.k);
@@ -54,7 +55,7 @@ export default function ElbowPlot() {
                   cx={x}
                   cy={y}
                   r={p.isOptimal ? "6" : "4"}
-                  fill={p.isOptimal ? "#ec4899" : "#7c3aed"}
+                  fill={p.isOptimal ? "#059669" : "#0891b2"}
                   stroke="#ffffff"
                   strokeWidth="2"
                 />
@@ -63,7 +64,7 @@ export default function ElbowPlot() {
                 </text>
                 {p.isOptimal && (
                   <g>
-                    <rect x={x - 36} y={y - 24} width="72" height="18" rx="4" fill="#7c3aed" />
+                    <rect x={x - 36} y={y - 24} width="72" height="18" rx="4" fill="#059669" />
                     <text x={x} y={y - 12} textAnchor="middle" className="text-[9px] font-bold fill-white">
                       Codo -20.2%
                     </text>
@@ -82,7 +83,7 @@ export default function ElbowPlot() {
         </svg>
       </div>
       <p className="text-[10px] text-slate-500 mt-1.5 text-center">
-        Punto óptimo en <strong className="text-purple-700 font-bold">k = 4</strong> (equilibrio de heterogeneidad).
+        Punto óptimo en <strong className="text-emerald-700 font-bold">k = 4</strong> (equilibrio de heterogeneidad).
       </p>
     </div>
   );

@@ -33,7 +33,7 @@ export default function ShapWaterfall({ baseValue = 0.911, contributions = [] })
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full overflow-x-auto bg-white border border-purple-200 rounded-xl p-2.5 shadow-sm">
+      <div className="w-full overflow-x-auto bg-white border border-slate-200 rounded-xl p-2.5 shadow-sm">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[460px]">
           {/* Header Axis */}
           <line x1={plotLeft} y1={20} x2={plotRight} y2={20} stroke="#cbd5e1" strokeWidth="1" />
@@ -75,14 +75,15 @@ export default function ShapWaterfall({ baseValue = 0.911, contributions = [] })
             const x2 = getX(Math.max(st.start, st.end));
             const barWidth = Math.max(x2 - x1, 3);
             const isPositive = st.delta >= 0;
-            const barColor = isPositive ? '#059669' : '#e11d48';
+            // Positive = Verde Esmeralda, Negative = Cyan Glaciar
+            const barColor = isPositive ? '#059669' : '#0891b2';
 
             return (
               <g key={st.name}>
                 <text x={6} y={y + 10} className="text-[10px] font-bold fill-slate-800">
                   {st.name}
                 </text>
-                <text x={6} y={y + 20} className="text-[8px] font-mono fill-purple-700">
+                <text x={6} y={y + 20} className="text-[8px] font-mono fill-indigo-700">
                   {st.featureDisplay}
                 </text>
 
@@ -102,7 +103,7 @@ export default function ShapWaterfall({ baseValue = 0.911, contributions = [] })
                   x={isPositive ? x2 + 4 : x1 - 4}
                   y={y + 13}
                   textAnchor={isPositive ? 'start' : 'end'}
-                  className={`text-[9px] font-mono font-bold ${isPositive ? 'fill-emerald-700' : 'fill-rose-700'}`}
+                  className={`text-[9px] font-mono font-bold ${isPositive ? 'fill-emerald-700' : 'fill-cyan-800'}`}
                 >
                   {isPositive ? `+${(st.delta * 100).toFixed(1)}%` : `${(st.delta * 100).toFixed(1)}%`}
                 </text>
@@ -110,20 +111,20 @@ export default function ShapWaterfall({ baseValue = 0.911, contributions = [] })
             );
           })}
 
-          {/* Final Line */}
+          {/* Final Line in Morado Azulado / Índigo */}
           <line
             x1={getX(finalProb)}
             y1={20}
             x2={getX(finalProb)}
             y2={height - 25}
-            stroke="#7c3aed"
+            stroke="#4338ca"
             strokeWidth="2"
           />
           <text
             x={getX(finalProb)}
             y={height - 4}
             textAnchor="middle"
-            className="text-[10px] font-mono font-black fill-purple-900"
+            className="text-[10px] font-mono font-black fill-indigo-900"
           >
             f(x) = {(finalProb * 100).toFixed(1)}%
           </text>
@@ -135,7 +136,7 @@ export default function ShapWaterfall({ baseValue = 0.911, contributions = [] })
           Tasa Base: <strong className="text-slate-900">91.1%</strong>
         </span>
         <span className="text-slate-600">
-          Predicción: <strong className="text-purple-700 font-mono text-xs">{(finalProb * 100).toFixed(1)}%</strong>
+          Predicción: <strong className="text-indigo-800 font-mono text-xs">{(finalProb * 100).toFixed(1)}%</strong>
         </span>
       </div>
     </div>

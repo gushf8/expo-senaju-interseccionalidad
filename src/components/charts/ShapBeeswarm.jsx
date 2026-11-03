@@ -6,24 +6,24 @@ const SHAP_FEATURES = [
     code: 'rural',
     desc: 'Mayor autoempleo agrícola familiar',
     points: [
-      { val: 0.28, featureVal: 1, color: '#e11d48' },
-      { val: 0.22, featureVal: 1, color: '#e11d48' },
-      { val: 0.16, featureVal: 1, color: '#f43f5e' },
-      { val: 0.08, featureVal: 0, color: '#c084fc' },
-      { val: -0.05, featureVal: 0, color: '#7c3aed' },
-      { val: -0.12, featureVal: 0, color: '#581c87' },
+      { val: 0.28, featureVal: 1, color: '#059669' },
+      { val: 0.22, featureVal: 1, color: '#059669' },
+      { val: 0.16, featureVal: 1, color: '#10b981' },
+      { val: 0.08, featureVal: 0, color: '#0891b2' },
+      { val: -0.05, featureVal: 0, color: '#4338ca' },
+      { val: -0.12, featureVal: 0, color: '#312e81' },
     ]
   },
   {
     name: 'Edad (15 - 29 años)',
     code: 'edad',
-    desc: 'Superación de transición formativa temprana',
+    desc: 'Superación de transición temprana',
     points: [
-      { val: 0.20, featureVal: 28, color: '#e11d48' },
-      { val: 0.14, featureVal: 25, color: '#f43f5e' },
-      { val: 0.06, featureVal: 22, color: '#c084fc' },
-      { val: -0.06, featureVal: 19, color: '#7c3aed' },
-      { val: -0.16, featureVal: 16, color: '#581c87' },
+      { val: 0.20, featureVal: 28, color: '#059669' },
+      { val: 0.14, featureVal: 25, color: '#10b981' },
+      { val: 0.06, featureVal: 22, color: '#0891b2' },
+      { val: -0.06, featureVal: 19, color: '#4338ca' },
+      { val: -0.16, featureVal: 16, color: '#312e81' },
     ]
   },
   {
@@ -31,11 +31,11 @@ const SHAP_FEATURES = [
     code: 'mujer',
     desc: 'Penalización interseccional directa',
     points: [
-      { val: -0.24, featureVal: 1, color: '#e11d48' },
-      { val: -0.18, featureVal: 1, color: '#e11d48' },
-      { val: -0.12, featureVal: 1, color: '#f43f5e' },
-      { val: 0.08, featureVal: 0, color: '#7c3aed' },
-      { val: 0.16, featureVal: 0, color: '#581c87' },
+      { val: -0.24, featureVal: 1, color: '#0891b2' },
+      { val: -0.18, featureVal: 1, color: '#0891b2' },
+      { val: -0.12, featureVal: 1, color: '#4338ca' },
+      { val: 0.08, featureVal: 0, color: '#10b981' },
+      { val: 0.16, featureVal: 0, color: '#059669' },
     ]
   },
   {
@@ -43,11 +43,11 @@ const SHAP_FEATURES = [
     code: 'ninos',
     desc: 'Frena mujeres, presiona varones',
     points: [
-      { val: -0.18, featureVal: 2, color: '#e11d48' },
-      { val: -0.12, featureVal: 1, color: '#f43f5e' },
-      { val: 0.14, featureVal: 2, color: '#e11d48' },
-      { val: 0.08, featureVal: 1, color: '#f43f5e' },
-      { val: -0.02, featureVal: 0, color: '#7c3aed' },
+      { val: -0.18, featureVal: 2, color: '#0891b2' },
+      { val: -0.12, featureVal: 1, color: '#4338ca' },
+      { val: 0.14, featureVal: 2, color: '#059669' },
+      { val: 0.08, featureVal: 1, color: '#10b981' },
+      { val: -0.02, featureVal: 0, color: '#4338ca' },
     ]
   },
   {
@@ -55,10 +55,10 @@ const SHAP_FEATURES = [
     code: 'educ',
     desc: 'Retornos heterogéneos según territorio',
     points: [
-      { val: 0.18, featureVal: 16, color: '#e11d48' },
-      { val: 0.11, featureVal: 13, color: '#f43f5e' },
-      { val: 0.04, featureVal: 11, color: '#c084fc' },
-      { val: -0.08, featureVal: 6, color: '#581c87' },
+      { val: 0.18, featureVal: 16, color: '#059669' },
+      { val: 0.11, featureVal: 13, color: '#10b981' },
+      { val: 0.04, featureVal: 11, color: '#0891b2' },
+      { val: -0.08, featureVal: 6, color: '#312e81' },
     ]
   }
 ];
@@ -85,23 +85,23 @@ export default function ShapBeeswarm() {
       <div className="flex items-center justify-between w-full mb-1.5 px-1 text-[11px]">
         <span className="text-slate-600 font-semibold">Impacto Direccional (TreeSHAP &phi;)</span>
         <div className="flex items-center gap-1.5">
-          <span className="text-[10px] text-purple-700 font-bold">Bajo</span>
-          <div className="w-12 h-1.5 rounded-full bg-gradient-to-r from-purple-700 via-pink-400 to-rose-600" />
-          <span className="text-[10px] text-rose-600 font-bold">Alto</span>
+          <span className="text-[10px] text-indigo-700 font-bold">Bajo</span>
+          <div className="w-14 h-1.5 rounded-full bg-gradient-to-r from-indigo-700 via-cyan-500 to-emerald-500" />
+          <span className="text-[10px] text-emerald-700 font-bold">Alto</span>
         </div>
       </div>
 
-      <div className="w-full overflow-x-auto bg-white border border-purple-200 rounded-xl p-2.5 shadow-sm">
+      <div className="w-full overflow-x-auto bg-white border border-slate-200 rounded-xl p-2.5 shadow-sm">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[500px]">
-          {/* Zero line */}
-          <line x1={xZero} y1={20} x2={xZero} y2={height - 15} stroke="#7c3aed" strokeWidth="1.5" strokeDasharray="3 3" />
-          <text x={xZero} y={13} textAnchor="middle" className="text-[9px] font-mono fill-purple-700 font-black">
+          {/* Zero line in Indigo */}
+          <line x1={xZero} y1={20} x2={xZero} y2={height - 15} stroke="#4338ca" strokeWidth="1.5" strokeDasharray="3 3" />
+          <text x={xZero} y={13} textAnchor="middle" className="text-[9px] font-mono fill-indigo-700 font-black">
             &phi; = 0
           </text>
-          <text x={plotLeft + 30} y={13} textAnchor="start" className="text-[9px] font-mono fill-rose-600 font-bold">
+          <text x={plotLeft + 30} y={13} textAnchor="start" className="text-[9px] font-mono fill-cyan-700 font-bold">
             &larr; Penaliza
           </text>
-          <text x={plotRight - 30} y={13} textAnchor="end" className="text-[9px] font-mono fill-emerald-600 font-bold">
+          <text x={plotRight - 30} y={13} textAnchor="end" className="text-[9px] font-mono fill-emerald-700 font-bold">
             Favorece &rarr;
           </text>
 
@@ -110,7 +110,7 @@ export default function ShapBeeswarm() {
             const y = 38 + idx * rowHeight;
             return (
               <g key={feat.code}>
-                <rect x={0} y={y - 12} width={width} height={rowHeight - 3} fill={idx % 2 === 0 ? '#faf5ff' : '#ffffff'} className="rounded" />
+                <rect x={0} y={y - 12} width={width} height={rowHeight - 3} fill={idx % 2 === 0 ? '#f8fafc' : '#ffffff'} className="rounded" />
                 <text x={8} y={y - 1} className="text-[10px] font-bold fill-slate-800">
                   {feat.name}
                 </text>
@@ -144,10 +144,10 @@ export default function ShapBeeswarm() {
       </div>
 
       {hoveredPoint && (
-        <div className="mt-1 text-[11px] bg-purple-50 border border-purple-300 rounded-lg px-2.5 py-1 text-slate-800 flex items-center gap-2">
-          <strong className="text-purple-900">{hoveredPoint.feat}:</strong>
+        <div className="mt-1 text-[11px] bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-slate-800 flex items-center gap-2">
+          <strong className="text-slate-900">{hoveredPoint.feat}:</strong>
           <span className="font-mono">
-            &phi; = <strong className={hoveredPoint.val >= 0 ? 'text-emerald-700' : 'text-rose-700'}>
+            &phi; = <strong className={hoveredPoint.val >= 0 ? 'text-emerald-700' : 'text-cyan-800'}>
               {hoveredPoint.val >= 0 ? `+${hoveredPoint.val.toFixed(2)}` : hoveredPoint.val.toFixed(2)}
             </strong>
           </span>
